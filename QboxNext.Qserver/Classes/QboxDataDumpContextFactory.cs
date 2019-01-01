@@ -74,35 +74,48 @@ namespace QboxNext.Qserver.Classes
                 //SAM: previously the Qbox metadata was read from Redis. For now we take a huge shortcut and
                 // only support smart meters EG with S0.
                 //TODO: make the datastorepath configurable.
+                var counterSensorMappingsSmartMeter = new CounterSensorMappingPoco
+                {
+                    PeriodeBegin = new DateTime(2000, 1, 1),
+                    Formule = 1000
+                };
+
                 var mini = new MiniPoco()
                 {
                     SerialNumber = sn,
-                    DataStorePath = $"D:\\QboxNextData\\{sn}",
+                    DataStorePath = @"D:\QboxNextData",
                     Counters = new List<CounterPoco>()
                     {
                         new CounterPoco
                         {
-                            CounterId = 181
+                            CounterId = 181,
+                            CounterSensorMappings = new List<CounterSensorMappingPoco> { counterSensorMappingsSmartMeter }
                         },
                         new CounterPoco
                         {
-                            CounterId = 182
+                            CounterId = 182,
+                            CounterSensorMappings = new List<CounterSensorMappingPoco> { counterSensorMappingsSmartMeter }
                         },
                         new CounterPoco
                         {
-                            CounterId = 281
+                            CounterId = 281,
+                            CounterSensorMappings = new List<CounterSensorMappingPoco> { counterSensorMappingsSmartMeter }
                         },
                         new CounterPoco
                         {
-                            CounterId = 282
+                            CounterId = 282,
+                            CounterSensorMappings = new List<CounterSensorMappingPoco> { counterSensorMappingsSmartMeter }
                         },
                         new CounterPoco
                         {
-                            CounterId = 2421
+                            CounterId = 2421,
+                            CounterSensorMappings = new List<CounterSensorMappingPoco> { counterSensorMappingsSmartMeter }
                         },
                         new CounterPoco
                         {
-                            CounterId = 1
+                            CounterId = 1,
+                            // This is not correct, since the Eltako's have different formula's. Keep it simple for now.
+                            CounterSensorMappings = new List<CounterSensorMappingPoco> { counterSensorMappingsSmartMeter }
                         }
                     },
                     Clients = new List<ClientQboxPoco>()

@@ -74,7 +74,7 @@ namespace QboxNext.Qserver.Core.Model
 			if (runningTotal != null)
 			{
 				runningTotal.Id = LastValueKey;
-				ClientRepositories.MetaData.Save(runningTotal);
+				ClientRepositories.MetaData?.Save(runningTotal);
 			}
 
 			if (lastValue != null && runningTotal != null && runningTotal.Raw > lastValue.Raw)
@@ -102,7 +102,10 @@ namespace QboxNext.Qserver.Core.Model
 		/// </summary>
 		public Record GetLastRecord(DateTime measurementTime)
 		{
-			Record lastValue = ClientRepositories.MetaData.GetById<Record>(LastValueKey) ?? (measurementTime != DateTime.MinValue ? StorageProvider.FindPrevious(measurementTime) : null);
+            // SAM: previously MetaData was set to read from Redis. For now we don't have a metadata database so we
+            // work around it by always falling back on the previous value from the storage provider (which is an
+            // expensive operation).
+			Record lastValue = ClientRepositories.MetaData?.GetById<Record>(LastValueKey) ?? (measurementTime != DateTime.MinValue ? StorageProvider.FindPrevious(measurementTime) : null);
 			return lastValue;
 		}
 
