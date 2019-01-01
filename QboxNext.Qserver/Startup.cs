@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using QboxNext.Qserver.Classes;
 
 namespace QboxNext.Qserver
 {
@@ -25,6 +26,7 @@ namespace QboxNext.Qserver
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSingleton<IQboxDataDumpContextFactory>(new QboxDataDumpContextFactory());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

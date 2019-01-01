@@ -12,6 +12,11 @@ namespace QboxNext.Qserver.Controllers
     {
         private readonly IQboxDataDumpContextFactory _qboxDataDumpContextFactory;
 
+        public DeviceController(IQboxDataDumpContextFactory qboxDataDataDumpContextFactory)
+        {
+            _qboxDataDumpContextFactory = qboxDataDataDumpContextFactory;
+        }
+
         // POST device/qbox
         // Example: /device/qbox/6618-1400-0200/15-46-002-442
         [HttpPost("/device/qbox/{pn}/{sn}")]

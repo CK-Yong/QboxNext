@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using Qboxes.Classes;
@@ -69,7 +71,13 @@ namespace QboxNext.Qserver.Classes
         {
             try
             {
-                var mini = ClientRepositories.MetaData.GetById<MiniPoco>(sn);
+                //SAM: previously the Qbox metadata was read from Redis. For now we take a huge shortcut and
+                // only support smart meters with S0.
+                var mini = new MiniPoco()
+                {
+                    SerialNumber = sn,
+                    Counters = new List<CounterPoco>()
+                };
                 if (mini != null)
                     mini.PrepareCounters();
                 return mini;
