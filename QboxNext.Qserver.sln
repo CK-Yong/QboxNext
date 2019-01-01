@@ -5,13 +5,13 @@ VisualStudioVersion = 15.0.28010.2041
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QboxNext.Qserver", "QboxNext.Qserver\QboxNext.Qserver.csproj", "{7C27589B-4A0A-465D-8D39-07831B55BF35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qboxes.Model", "Qboxes.Model\Qboxes.Model.csproj", "{5F6F9C40-E18E-428A-9645-F37E02EC86AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qboxes.Model", "Qboxes.Model\Qboxes.Model.csproj", "{5F6F9C40-E18E-428A-9645-F37E02EC86AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QboxNext.Core", "QboxNext.Core\QboxNext.Core.csproj", "{795FDCD5-AC8E-4A26-ACD2-56FC09F6E4D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QboxNext.Core", "QboxNext.Core\QboxNext.Core.csproj", "{795FDCD5-AC8E-4A26-ACD2-56FC09F6E4D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QboxNext.Qserver.Core", "QboxNext.Qserver.Core\QboxNext.Qserver.Core.csproj", "{F7A97C6B-A339-44D0-A0A9-DD2DEF50D2DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QboxNext.Qserver.Core", "QboxNext.Qserver.Core\QboxNext.Qserver.Core.csproj", "{F7A97C6B-A339-44D0-A0A9-DD2DEF50D2DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QboxNext.Qboxes.Parsing", "QboxNext.Qboxes.Parsing\QboxNext.Qboxes.Parsing.csproj", "{25D92117-34B7-48B2-A849-D7730B2B415E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QboxNext.Qboxes.Parsing", "QboxNext.Qboxes.Parsing\QboxNext.Qboxes.Parsing.csproj", "{25D92117-34B7-48B2-A849-D7730B2B415E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
