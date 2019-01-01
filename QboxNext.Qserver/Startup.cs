@@ -9,7 +9,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using QboxNext.Qboxes.Parsing.Factories;
 using QboxNext.Qserver.Classes;
+using QboxNext.Qserver.Core.DataStore;
+using QboxNext.Qserver.Core.Factories;
+using QboxNext.Qserver.Core.Interfaces;
 
 namespace QboxNext.Qserver
 {
@@ -18,6 +22,9 @@ namespace QboxNext.Qserver
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            ParserFactory.RegisterAllParsers();
+            StorageProviderFactory.Register(StorageProvider.kWhStorage, typeof(kWhStorage));
+
         }
 
         public IConfiguration Configuration { get; }

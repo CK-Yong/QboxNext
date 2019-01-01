@@ -72,11 +72,40 @@ namespace QboxNext.Qserver.Classes
             try
             {
                 //SAM: previously the Qbox metadata was read from Redis. For now we take a huge shortcut and
-                // only support smart meters with S0.
+                // only support smart meters EG with S0.
+                //TODO: make the datastorepath configurable.
                 var mini = new MiniPoco()
                 {
                     SerialNumber = sn,
+                    DataStorePath = $"D:\\QboxNextData\\{sn}",
                     Counters = new List<CounterPoco>()
+                    {
+                        new CounterPoco
+                        {
+                            CounterId = 181
+                        },
+                        new CounterPoco
+                        {
+                            CounterId = 182
+                        },
+                        new CounterPoco
+                        {
+                            CounterId = 281
+                        },
+                        new CounterPoco
+                        {
+                            CounterId = 282
+                        },
+                        new CounterPoco
+                        {
+                            CounterId = 2421
+                        },
+                        new CounterPoco
+                        {
+                            CounterId = 1
+                        }
+                    },
+                    Clients = new List<ClientQboxPoco>()
                 };
                 if (mini != null)
                     mini.PrepareCounters();
