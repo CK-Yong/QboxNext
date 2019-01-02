@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "QboxNext.DumpQbx": {
+      "commandName": "Project",
+      "commandLineArgs": "--qbx=d:\\QboxNextData\\Qbox_15-46-002-442\\15-46-002-442_00000181.qbx --values"
+    }
+  }
+}
