@@ -7,7 +7,7 @@ namespace QboxNext.Qboxes.Parsing
 {
     public class BinaryParser
     {
-        protected static readonly ILog Log = LogProvider.GetCurrentClassLogger();
+        private static readonly ILog Log = LogProvider.GetCurrentClassLogger();
 
         #region private
 

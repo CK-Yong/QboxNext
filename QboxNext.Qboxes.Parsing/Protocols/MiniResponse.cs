@@ -8,8 +8,10 @@ namespace QboxNext.Qboxes.Parsing.Protocols
     /// </summary>
     public class MiniResponse : MiniParser
     {
-        protected override void DoParse()
-        {
+		private static readonly ILog Log = LogProvider.GetCurrentClassLogger();
+
+	    protected override void DoParse()
+	    {
             Log.Trace("Enter");
 
             var response = new ResponseParseResult();

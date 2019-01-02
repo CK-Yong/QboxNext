@@ -9,6 +9,7 @@ namespace QboxNext.Qboxes.Parsing.Protocols
 
 	public class DeviceSettingsPayload : BasePayload
 	{
+		private static readonly ILog Log = LogProvider.GetCurrentClassLogger();
 		/// <summary>
 		/// Parse devicesettings and returns one or a list of DeviceSettings
 		/// Number of DeviceSettings is dependent on first DeviceSettingType (setting), SensorSettingsComposite and SensorMeasurements contains multi settings

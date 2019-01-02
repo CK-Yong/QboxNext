@@ -8,8 +8,10 @@ namespace QboxNext.Qboxes.Parsing.Protocols
     /// - ClientID added to client settings and client info DeviceSettings
     /// - GroupID added to counterpayloads
     /// </summary>
-    public class MiniR16 : MiniR07
-    {
+	public class MiniR16 : MiniR07
+	{
+		private static readonly ILog Log = LogProvider.GetCurrentClassLogger();
+
 		protected virtual void AddCounterPayload(Mini07ParseModel model, CounterGroup group)
 		{
 			model.Payloads.Add(new CounterWithSourcePayload

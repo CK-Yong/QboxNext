@@ -7,8 +7,9 @@ namespace QboxNext.Qboxes.Parsing.Protocols
 {
 	public class ClientStatusPayload : BasePayload
 	{
-		public ClientMiniStatus State { get; private set; }
+		private static readonly ILog Log = LogProvider.GetCurrentClassLogger();
 
+		public ClientMiniStatus State { get; private set; }
 		private BitArray Data { get; set; }
 		public DateTime MeasurementTime { get; private set; }
 		public byte RawValue { get; private set; }

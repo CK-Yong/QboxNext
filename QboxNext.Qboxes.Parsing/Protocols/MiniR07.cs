@@ -6,9 +6,11 @@ using QboxNext.Qboxes.Parsing.Logging;
 
 namespace QboxNext.Qboxes.Parsing.Protocols
 {
-    public class MiniR07 : MiniParser
-    {
-        protected override void DoParse()
+	public class MiniR07 : MiniParser
+	{
+		private static readonly ILog Log = LogProvider.GetCurrentClassLogger();
+
+		protected override void DoParse()
         {
             Log.Trace("Enter");
 

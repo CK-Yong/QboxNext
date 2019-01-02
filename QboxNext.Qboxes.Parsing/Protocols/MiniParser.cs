@@ -13,7 +13,7 @@ namespace QboxNext.Qboxes.Parsing.Protocols
     /// </summary>
     public abstract class MiniParser
     {
-        protected static readonly ILog Log = LogProvider.GetLogger("MiniParser");
+        private static readonly ILog Log = LogProvider.GetLogger("MiniParser");
         protected StringParser Parser;
         protected BaseParseResult BaseParseResult;
 
