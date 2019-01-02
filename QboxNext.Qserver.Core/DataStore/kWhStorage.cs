@@ -1245,30 +1245,31 @@ namespace QboxNext.Qserver.Core.DataStore
         private readonly FileShare _mFileShare;
         #endregion//Private Members
 
-        #region Constructors
-        /// <summary>
-        /// Constructor for the SaveFileStream creates the resources the stream depends upon
-        /// </summary>
-        /// <param name="path">The path including the file name for the file to open</param>
-        /// <param name="mode">The mode for the file open.</param>
-        /// <param name="access">The required access type</param>
-        /// <param name="share">The type of share that is allowed between streams opening the same file</param>
-        public SafeFileStream(string path, FileMode mode, FileAccess access, FileShare share)
-        {
-            _mMutex = new Mutex(false, String.Format("Global\\{0}", path.Replace('\\', '/')));
-            //SAM: I can't get this to work, I keep getting 'you must add a reference to assembly' errors.
-			// This is needed according to stackoverflow: http://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c
-			//var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
-			//var securitySettings = new MutexSecurity();
-			//securitySettings.AddAccessRule(allowEveryoneRule);
-			//_mMutex.SetAccessControl(securitySettings);
+	    #region Constructors
 
-            _mPath = path;
-            _mFileMode = mode;
-            _mFileAccess = access;
-            _mFileShare = share;
-        }
-        #endregion//Constructors
+	    /// <summary>
+	    /// Constructor for the SaveFileStream creates the resources the stream depends upon
+	    /// </summary>
+	    /// <param name="path">The path including the file name for the file to open</param>
+	    /// <param name="mode">The mode for the file open.</param>
+	    /// <param name="access">The required access type</param>
+	    /// <param name="share">The type of share that is allowed between streams opening the same file</param>
+	    public SafeFileStream(string path, FileMode mode, FileAccess access, FileShare share)
+	    {
+		    _mMutex = new Mutex(false, String.Format("Global\\{0}", path.Replace('\\', '/')));
+		    // This is needed according to stackoverflow: http://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c
+		    var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
+		    var securitySettings = new MutexSecurity();
+		    securitySettings.AddAccessRule(allowEveryoneRule);
+		    _mMutex.SetAccessControl(securitySettings);
+
+		    _mPath = path;
+		    _mFileMode = mode;
+		    _mFileAccess = access;
+		    _mFileShare = share;
+	    }
+
+	    #endregion//Constructors
 
         #region Properties
 
