@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using NLog;
 using Qboxes.Classes;
 using Qboxes.Interfaces;
+using QboxNext.Core.Log;
 using QboxNext.Qserver.Classes;
 
 namespace QboxNext.Qserver.Controllers
@@ -14,6 +16,7 @@ namespace QboxNext.Qserver.Controllers
     {
         private readonly IQboxDataDumpContextFactory _qboxDataDumpContextFactory;
         private readonly IQboxMessagesLogger _qboxMessagesLogger;
+        private static readonly Logger Log = QboxNextLogFactory.GetLogger("DeviceController");
 
         public DeviceController(IQboxDataDumpContextFactory qboxDataDataDumpContextFactory)
         {
@@ -26,10 +29,13 @@ namespace QboxNext.Qserver.Controllers
         [HttpPost("/device/qbox/{pn}/{sn}")]
         public ActionResult Qbox(string pn, string sn)
         {
+            Log.Trace("Enter");
             var qboxDataDumpContext = _qboxDataDumpContextFactory.CreateContext(ControllerContext, pn, sn);
+            Log.Info(qboxDataDumpContext.Mini.SerialNumber);
             string result = new MiniDataHandler(qboxDataDumpContext, _qboxMessagesLogger).Handle();
-
-            return Ok();
+            Log.Info("Parsing Done: {0}", result);
+            Log.Trace("Return");
+            return Content(result);
         }
     }
 }
