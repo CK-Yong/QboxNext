@@ -16,6 +16,21 @@ The modifications are:
 - no Qbox metadata is being retrieved from a database, for now only a smartmeter with S0 (Eltako) is supported.
 - all Qbox data is written to d:\QboxNextData.
 
+## How to build
+
+1. Download [Visual Studio Express](https://visualstudio.microsoft.com/vs/express/) or [Visual Studio Code](https://code.visualstudio.com/).
+2. Install [git](https://git-scm.com/download/win).
+3. Open a command shell and change to a directory for your git repositories, for example ```cd /d d:\git```
+4. Enter the command to clone this repository: ```git clone https://bitbucket.org/qboxnext/dotnetcore-minimal```
+5. Open Visual Studio.
+6. Open the sln, in this example d:\git\dotnetcore-minimal\QboxNext.Qserver.sln
+7. In the menu select Build->Rebuild Solution
+
+## How to run
+
+To run Qserver, right click on the QboxNext.Qserver project in the Solution Explorer and select 'Set as Startup Project'. 
+Then in the menu select Debug->Start Debugging.
+
 ## Qserver
 
 An ASP.NET application that receives and processes messages from Qboxes. When run it uses the built-in [Kestrel](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-2.2) web server. 
