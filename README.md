@@ -4,6 +4,7 @@
 
 This repository is a modified clone of Qplatform.
 The modifications are:
+
 - only the code needed for Qserver and the Qbox simulator was kept, the rest was removed,
 - a stand-alone version DumpQBX was added,
 - all occurrences of 'Qurrent' were replaces with 'QboxNext',
