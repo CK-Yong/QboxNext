@@ -1256,14 +1256,17 @@ namespace QboxNext.Qserver.Core.DataStore
 	    /// <param name="share">The type of share that is allowed between streams opening the same file</param>
 	    public SafeFileStream(string path, FileMode mode, FileAccess access, FileShare share)
 	    {
-		    _mMutex = new Mutex(false, String.Format("Global\\{0}", path.Replace('\\', '/')));
-		    // This is needed according to stackoverflow: http://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c
-		    var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
-		    var securitySettings = new MutexSecurity();
-		    securitySettings.AddAccessRule(allowEveryoneRule);
-		    _mMutex.SetAccessControl(securitySettings);
+		    _mMutex = new Mutex(false, String.Format("Global\\{0}", path.Replace('\\', '_').Replace('/', '_')));
+	        if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+	        {
+	            // This is needed according to stackoverflow: http://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c
+	            var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
+	            var securitySettings = new MutexSecurity();
+	            securitySettings.AddAccessRule(allowEveryoneRule);
+	            _mMutex.SetAccessControl(securitySettings);
+	        }
 
-		    _mPath = path;
+	        _mPath = path;
 		    _mFileMode = mode;
 		    _mFileAccess = access;
 		    _mFileShare = share;
