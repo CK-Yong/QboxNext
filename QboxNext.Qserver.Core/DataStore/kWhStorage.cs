@@ -1257,10 +1257,14 @@ namespace QboxNext.Qserver.Core.DataStore
 	    public SafeFileStream(string path, FileMode mode, FileAccess access, FileShare share)
 	    {
 		    _mMutex = new Mutex(false, String.Format("Global\\{0}", path.Replace('\\', '_').Replace('/', '_')));
-	        if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
 	        {
-	            // This is needed according to stackoverflow: http://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c
-	            var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
+                // SAM: This is a piece of code that I expect to work after Microsoft puts some more effort into the Linux implementation. So this 'if' is a temporary workaround. 
+                // But I want to rewrite the whole SafeFileStream code anyway because it’s not safe when writing from multiple servers. 
+                // I think this should be handled on the file system level, not on the OS level.
+
+                // This is needed according to stackoverflow: http://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c
+                var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
 	            var securitySettings = new MutexSecurity();
 	            securitySettings.AddAccessRule(allowEveryoneRule);
 	            _mMutex.SetAccessControl(securitySettings);
