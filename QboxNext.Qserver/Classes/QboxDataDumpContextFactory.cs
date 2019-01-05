@@ -83,7 +83,7 @@ namespace QboxNext.Qserver.Classes
                 var mini = new MiniPoco()
                 {
                     SerialNumber = sn,
-                    DataStorePath = @"D:\QboxNextData",
+                    DataStorePath = Environment.OSVersion.Platform == PlatformID.Win32NT ? @"D:\QboxNextData" : "/var/qboxnextdata",
                     Counters = new List<CounterPoco>()
                     {
                         new CounterPoco
