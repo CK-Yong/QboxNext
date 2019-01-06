@@ -37,7 +37,9 @@ Make sure you're either in the folder, or pointing the command to the right fold
 To run Qserver, right click on the QboxNext.Qserver project in the Solution Explorer and select 'Set as Startup Project'. 
 Then in the menu select Debug->Start Debugging.
 
-You can also use the following command from the directory where the QboxNext.Qserver.dll was built (usually located in `QboxNext.Qserver/bin/Debug/netcoreapp2.1`).
+You can also use the following command from the directory where the QboxNext.Qserver.dll was built (usually located in `QboxNext.Qserver/bin/Debug/netcoreapp2.1`):
+
+`dotnet QboxNext.Qserver.dll`
 
 ## Qserver
 
@@ -88,7 +90,7 @@ RawContentLength  : 14
 
 ### For Linux
 
-Copy the script below into a text file, save it as "somefile.sh".
+Copy the script below into a text file, save it and give it a name like "testqserver.sh".
 
 ```bash
 #!/bin/bash       
@@ -110,6 +112,13 @@ echo 'Body:'
 echo "$BODY"
 
 curl http://localhost:5000/device/qbox/6618-1400-0200/15-46-002-442 -d "$BODY" -H "Content-Type: text/html" -v
+```
+
+Run the script by using the following commands in the terminal (obviously you'll need to be in the same folder as where you saved the file):
+
+```bash
+chmod u+x testqserver.sh && \
+./testqserver.sh
 ```
 
 Another option is to run the Qbox simulator. See SimulateQbox.
@@ -145,12 +154,13 @@ The 'money' column is obsolete and can be ignored.
 The column 'quality' specifies if the value was a value received by Qserver or an interpolated value.
 
 ### For Linux
-
-Run the following command from the `./QboxNext.Qserver/bin/Debug/netcoreapp2.1` directory.
-```bash
-sudo dotnet QboxNext.SimulateQbox.dll --qserver=http://localhost:5000 \
---qboxserial=00-00-000-000 --metertype=smart \
---pattern='181:flat(2);182:zero;281:zero;282:zero;2421:zero'
+Run the command below. You may have to replace the file paths depending on the Qbox you want to dump. Check the `/var/qboxnext` folder to see the folders with qbx files in them.
+```
+sudo sh -c \
+'dotnet QboxNext.DumpQbx.dll \
+--qbx=/var/qboxnextdata/Qbox_00-00-000-000/00-00-000-000_00000181.qbx \
+--values \
+> /var/qboxnextdata/Qbox_00-00-000-000/00-00-000-000_00000181.qbx.txt'
 ```
 
 ## SimulateQbox
@@ -170,13 +180,12 @@ dotnet QboxNext.SimulateQbox.dll
 ```
 
 ### For Linux
-Run the command below. You may have to replace the file paths depending on the Qbox you want to dump. Check the `/var/qboxnext` folder to see the folders with qbx files in them.
-```
-sudo sh -c \
-'dotnet QboxNext.DumpQbx.dll \
---qbx=/var/qboxnextdata/Qbox_00-00-000-000/00-00-000-000_00000181.qbx \
---values \
-> /var/qboxnextdata/Qbox_00-00-000-000/00-00-000-000_00000181.qbx.txt'
+
+Run the following command from the `./QboxNext.Qserver/bin/Debug/netcoreapp2.1` directory.
+```bash
+dotnet QboxNext.SimulateQbox.dll --qserver=http://localhost:5000 \
+--qboxserial=00-00-000-000 --metertype=smart \
+--pattern='181:flat(2);182:zero;281:zero;282:zero;2421:zero'
 ```
 
 ## General notes
