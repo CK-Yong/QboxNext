@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "QboxNext.ParseQboxMessage": {
+      "commandName": "Project",
+      "commandLineArgs": "--message=0EF7050000378C00010100000000"
+    }
+  }
+}
