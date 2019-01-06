@@ -28,7 +28,7 @@ The modifications are:
 
 Note: If you're not using Visual Studio, you can build the solution by running the following shell command (you need the [dotnet-sdk-2.2](https://dotnet.microsoft.com/download/dotnet-core/2.2) package for this). 
 ```
-dotnet build QboxNext.Qserver.sln -c Debug 
+dotnet build QboxNext.Qserver.sln
 ```
 Make sure you're either in the folder, or pointing the command to the right folder by replacing QboxNext.Qserver with a filepath.
 
