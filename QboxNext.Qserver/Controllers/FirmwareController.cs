@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.IO;
 
 namespace QboxNext.Qserver.Controllers
 {
@@ -11,7 +12,8 @@ namespace QboxNext.Qserver.Controllers
         [HttpGet("/firmware/qbox/{pn}/{sn}/{rn}")]
         public ActionResult Firmware(string pn, string sn, string rn)
         {
-            byte[] bytes = System.IO.File.ReadAllBytes("firmware\\A48_ENCRYPT_ON_svn_ver_681");
+            var firmwarePath = Path.Join("firmware", "A48_ENCRYPT_ON_svn_ver_681");
+            byte[] bytes = System.IO.File.ReadAllBytes(firmwarePath);
             return File(bytes, "application/octet-stream", "A48_ENCRYPT_ON_svn_ver_681");
         }
     }
