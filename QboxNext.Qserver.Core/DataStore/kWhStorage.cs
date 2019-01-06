@@ -1237,7 +1237,6 @@ namespace QboxNext.Qserver.Core.DataStore
         private static readonly Logger Log = LogManager.GetLogger("SafeFileStream");
 
         #region Private Members
-        private readonly Mutex _mMutex;
         private Stream _mStream;
         private readonly string _mPath;
         private readonly FileMode _mFileMode;
@@ -1256,20 +1255,6 @@ namespace QboxNext.Qserver.Core.DataStore
 	    /// <param name="share">The type of share that is allowed between streams opening the same file</param>
 	    public SafeFileStream(string path, FileMode mode, FileAccess access, FileShare share)
 	    {
-		    _mMutex = new Mutex(false, String.Format("Global\\{0}", path.Replace('\\', '_').Replace('/', '_')));
-            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-	        {
-                // SAM: This is a piece of code that I expect to work after Microsoft puts some more effort into the Linux implementation. So this 'if' is a temporary workaround. 
-                // But I want to rewrite the whole SafeFileStream code anyway because it’s not safe when writing from multiple servers. 
-                // I think this should be handled on the file system level, not on the OS level.
-
-                // This is needed according to stackoverflow: http://stackoverflow.com/questions/229565/what-is-a-good-pattern-for-using-a-global-mutex-in-c
-                var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
-	            var securitySettings = new MutexSecurity();
-	            securitySettings.AddAccessRule(allowEveryoneRule);
-	            _mMutex.SetAccessControl(securitySettings);
-	        }
-
 	        _mPath = path;
 		    _mFileMode = mode;
 		    _mFileAccess = access;
@@ -1309,9 +1294,23 @@ namespace QboxNext.Qserver.Core.DataStore
         public void Open()
         {
             if (_mStream != null)
+            {
                 throw new InvalidOperationException();
-            _mMutex.WaitOne();
-            _mStream = File.Open(_mPath, _mFileMode, _mFileAccess, _mFileShare);
+            }
+            do
+            {
+                try
+                {
+                    _mStream = File.Open(_mPath, _mFileMode, _mFileAccess, _mFileShare);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Log.Warn(ex, $"Can't open file: {ex.Message}\nWill retry after one second.");
+                    Thread.Sleep(1000);
+                }
+            }
+            while (true);
         }
 
         /// <summary>
@@ -1324,8 +1323,12 @@ namespace QboxNext.Qserver.Core.DataStore
         public bool TryOpen(TimeSpan span)
         {
             if (_mStream != null)
+            {
                 throw new InvalidOperationException();
-            if (_mMutex.WaitOne(span))
+            }
+
+            DateTime deadline = DateTime.Now + span;
+            do
             {
                 try
                 {
@@ -1334,9 +1337,13 @@ namespace QboxNext.Qserver.Core.DataStore
                 }
                 catch (Exception e)
                 {
-                    Log.Error(e, e.Message);
+                    Log.Warn(e, $"Can't open file {_mPath}: {e.Message}\nWill retry after one second.");
+                    Thread.Sleep(1000);
                 }
             }
+            while (DateTime.Now < deadline);
+
+            Log.Warn($"Could not open file {_mPath} for {_mFileMode}/{_mFileAccess}/{_mFileShare} after {span.TotalMilliseconds} milliseconds");
             return false;
         }
 
@@ -1350,14 +1357,6 @@ namespace QboxNext.Qserver.Core.DataStore
             {
                 _mStream.Close();
                 _mStream = null;
-	            try
-	            {
-					_mMutex.ReleaseMutex();
-	            }
-	            catch (ApplicationException ex)
-	            {
-					Log.Warn(ex, "Tried to release mutex on wrong thread");
-	            }
             }
         }
 

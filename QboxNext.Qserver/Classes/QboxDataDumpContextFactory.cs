@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using Qboxes.Classes;
 using QboxNext.Core.Encryption;
 using QboxNext.Core.Log;
+using QboxNext.Qboxes.Parsing.Protocols;
 using QboxNext.Qserver.Core.Interfaces;
 using QboxNext.Qserver.Core.Model;
 
@@ -118,7 +118,9 @@ namespace QboxNext.Qserver.Classes
                             CounterSensorMappings = new List<CounterSensorMappingPoco> { counterSensorMappingsSmartMeter }
                         }
                     },
-                    Clients = new List<ClientQboxPoco>()
+                    Clients = new List<ClientQboxPoco>(),
+                    Precision = Precision.mWh,
+                    MeterType = DeviceMeterType.Smart_Meter_EG
                 };
                 if (mini != null)
                     mini.PrepareCounters();
