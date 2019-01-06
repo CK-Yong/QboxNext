@@ -14,6 +14,7 @@ using QboxNext.Qserver.Classes;
 using QboxNext.Qserver.Core.DataStore;
 using QboxNext.Qserver.Core.Factories;
 using QboxNext.Qserver.Core.Interfaces;
+using QboxNext.Qserver.Core.Utils;
 
 namespace QboxNext.Qserver
 {
@@ -24,7 +25,7 @@ namespace QboxNext.Qserver
             Configuration = configuration;
             ParserFactory.RegisterAllParsers();
             StorageProviderFactory.Register(StorageProvider.kWhStorage, typeof(kWhStorage));
-
+            ClientRepositories.Queue = new MemoryQueue<string>();
         }
 
         public IConfiguration Configuration { get; }
