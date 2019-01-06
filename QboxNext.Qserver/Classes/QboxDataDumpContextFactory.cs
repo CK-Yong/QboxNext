@@ -118,7 +118,8 @@ namespace QboxNext.Qserver.Classes
                             CounterSensorMappings = new List<CounterSensorMappingPoco> { counterSensorMappingsSmartMeter }
                         }
                     },
-                    Clients = new List<ClientQboxPoco>()
+                    Clients = new List<ClientQboxPoco>(),
+                    Precision = Precision.mWh
                 };
                 if (mini != null)
                     mini.PrepareCounters();
