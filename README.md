@@ -26,10 +26,20 @@ The modifications are:
 6. Open the sln, in this example d:\git\dotnetcore-minimal\QboxNext.Qserver.sln
 7. In the menu select Build->Rebuild Solution
 
+Note: If you're not using Visual Studio, you can build the solution by running the following shell command (you need the [dotnet-sdk-2.2](https://dotnet.microsoft.com/download/dotnet-core/2.2) package for this). 
+```
+dotnet build QboxNext.Qserver.sln
+```
+Make sure you're either in the folder, or pointing the command to the right folder by replacing QboxNext.Qserver with a filepath.
+
 ## How to run
 
 To run Qserver, right click on the QboxNext.Qserver project in the Solution Explorer and select 'Set as Startup Project'. 
 Then in the menu select Debug->Start Debugging.
+
+You can also use the following command from the directory where the QboxNext.Qserver.dll was built (usually located in `QboxNext.Qserver/bin/Debug/netcoreapp2.1`):
+
+`dotnet QboxNext.Qserver.dll`
 
 ## Qserver
 
@@ -78,6 +88,39 @@ ParsedHtml        : mshtml.HTMLDocumentClass
 RawContentLength  : 14
 ```
 
+### For Linux
+
+Copy the script below into a text file, save it and give it a name like "testqserver.sh".
+
+```bash
+#!/bin/bash       
+read -r -d '' BODY <<- EOM
+	FAFB070DABB7440780/KFM5KAIFA-METER 1-3:0.2.8(40) 0-0:1.0.0(000102045905W) 
+	0-0:96.1.1(4530303033303030303030303032343133) 1-0:1.8.1(000001.011*kWh) 
+	1-0:1.8.2(000000.000*kWh) 1-0:2.8.1(000000.000*kWh) 
+	1-0:2.8.2(000000.000*kWh) 0-0:96.14.0(0001) 1-0:1.7.0(00.034*kW) 
+	1-0:2.7.0(00.000*kW) 0-0:17.0.0(999.9*kW) 0-0:96.3.10(1) 0-0:96.7.21(00073) 
+	0-0:96.7.9(00020) 1-0:99.97.0(3)(0-0:96.7.19)(000124235657W)(0000003149*s)(000124225935W)(0000000289*s)(000101000001W)(2147483647*s) 
+	1-0:32.32.0(00005) 1-0:52.32.0(00006) 1-0:72.32.0(00001) 1-0:32.36.0(00000) 
+	1-0:52.36.0(00000) 1-0:72.36.0(00000) 0-0:96.13.1() 0-0:96.13.0() 1-0:31.7.0(000*A) 
+	1-0:51.7.0(000*A) 1-0:71.7.0(000*A) 1-0:21.7.0(00.034*kW) 1-0:22.7.0(00.000*kW) 1-0:41.7.0(00.000*kW) 
+	1-0:42.7.0(00.000*kW) 1-0:61.7.0(00.000*kW) 1-0:62.7.0(00.000*kW) 0-1:24.1.0(003) 
+	0-1:96.1.0(4730303131303033303832373133363133) 0-1:24.2.1(000102043601W)(62869.839*m3) 0-1:24.4.0(1) !583C
+EOM
+
+echo 'Body:'
+echo "$BODY"
+
+curl http://localhost:5000/device/qbox/6618-1400-0200/15-46-002-442 -d "$BODY" -H "Content-Type: text/html" -v
+```
+
+Run the script by using the following commands in the terminal (obviously you'll need to be in the same folder as where you saved the file):
+
+```bash
+chmod u+x testqserver.sh && \
+./testqserver.sh
+```
+
 Another option is to run the Qbox simulator. See SimulateQbox.
 
 ### Notes
@@ -110,6 +153,16 @@ The column 'kWh' is the raw value converted to kWh.
 The 'money' column is obsolete and can be ignored.
 The column 'quality' specifies if the value was a value received by Qserver or an interpolated value.
 
+### For Linux
+Run the command below. You may have to replace the file paths depending on the Qbox you want to dump. Check the `/var/qboxnext` folder to see the folders with qbx files in them.
+```
+sudo sh -c \
+'dotnet QboxNext.DumpQbx.dll \
+--qbx=/var/qboxnextdata/Qbox_00-00-000-000/00-00-000-000_00000181.qbx \
+--values \
+> /var/qboxnextdata/Qbox_00-00-000-000/00-00-000-000_00000181.qbx.txt'
+```
+
 ## SimulateQbox
 
 SimulateQbox is a simulator that can simulate Qboxes attached to several types of meters and simulate several usage and generation patterns.
@@ -124,6 +177,15 @@ To view an explanation of the different meter types and patterns, run SimulateQb
 
 ```dos
 dotnet QboxNext.SimulateQbox.dll
+```
+
+### For Linux
+
+Run the following command from the `./QboxNext.Qserver/bin/Debug/netcoreapp2.1` directory.
+```bash
+dotnet QboxNext.SimulateQbox.dll --qserver=http://localhost:5000 \
+--qboxserial=00-00-000-000 --metertype=smart \
+--pattern='181:flat(2);182:zero;281:zero;282:zero;2421:zero'
 ```
 
 ## General notes
