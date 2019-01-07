@@ -5,11 +5,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="firmware\A14_Encrypt_Off_v325" />
+    <None Remove="firmware\A16_Encrypt_Off_v384" />
+    <None Remove="firmware\A37_Encrypt_Off_v516" />
+    <None Remove="firmware\A46 Encryption ON rev676" />
+    <None Remove="firmware\A47_ENCRYPT_OFF_svn_ver_680_P1_Debug" />
     <None Remove="firmware\A48_ENCRYPT_ON_svn_ver_681" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="firmware\A48_ENCRYPT_ON_svn_ver_681">
+    <Content Include="firmware\A14_Encrypt_Off_v325">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="firmware\A16_Encrypt_Off_v384">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="firmware\A37_Encrypt_Off_v516">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="firmware\A46 Encryption ON rev676">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="firmware\A47_ENCRYPT_OFF_svn_ver_680_P1_Debug">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
