@@ -26,7 +26,7 @@ namespace QboxNext.DumpQbx
             }
             else
             {
-                System.Console.WriteLine("Usage: QboxNext.Console --qbx=<path> [--values]");
+                System.Console.WriteLine("Usage: QboxNext.DumpQbx --qbx=<path> [--values]");
             }
         }
 
