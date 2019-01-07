@@ -120,7 +120,9 @@ namespace QboxNext.Qserver.Classes
                     },
                     Clients = new List<ClientQboxPoco>(),
                     Precision = Precision.mWh,
-                    MeterType = DeviceMeterType.Smart_Meter_EG
+                    MeterType = DeviceMeterType.Smart_Meter_EG,
+                    SecondaryMeterType = DeviceMeterType.None,
+                    AutoAnswer = true
                 };
                 if (mini != null)
                     mini.PrepareCounters();
