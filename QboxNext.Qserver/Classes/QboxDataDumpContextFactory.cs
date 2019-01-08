@@ -118,10 +118,18 @@ namespace QboxNext.Qserver.Classes
                             CounterSensorMappings = new List<CounterSensorMappingPoco> { counterSensorMappingsSmartMeter }
                         }
                     },
-                    Clients = new List<ClientQboxPoco>(),
+                    Clients = new List<ClientQboxPoco>()
+                    {
+                        new ClientQboxPoco
+                        {
+                            ClientId = 0,
+                            MeterType = DeviceMeterType.Smart_Meter_EG,     // Main meter type for second Qbox of Duo.
+                            SecondaryMeterType = DeviceMeterType.SO_Pulse   // Should be DeviceMeterType.SO_Pulse for Mono with Qbox Solar.
+                        }
+                    },
                     Precision = Precision.mWh,
-                    MeterType = DeviceMeterType.Smart_Meter_EG,
-                    SecondaryMeterType = DeviceMeterType.None,
+                    MeterType = DeviceMeterType.NO_Meter,       // This should contain the actual meter type for Mono.
+                    SecondaryMeterType = DeviceMeterType.None,  // This should be DeviceMeterType.SO_Pulse for Mono with Qbox Solar.
                     AutoAnswer = true
                 };
                 if (mini != null)
