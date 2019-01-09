@@ -1,6 +1,6 @@
 Publishing a project (for Release) so that it can be copied and ran in the container:
 
-	dotnet publish QboxNext.Qserver.csproj -c RELEASE
+	dotnet publish QboxNext.Qserver.csproj -c Release
 
 Building a Docker image using a Dockerfile in current folder:
 

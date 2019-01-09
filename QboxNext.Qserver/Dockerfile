@@ -7,10 +7,10 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY ./bin/Release/netcoreapp2.1/publish /app
 
-# Expose port 5000 (used by default by ASP.NET Core).
+# Expose port 5000.
 EXPOSE 5000
 
-# Set port in environment variable to 5000
+# Set port in environment variable to 5000, Kestrel will be using this for determining which port to listen to.
 ENV ASPNETCORE_URLS http://*:5000
 
 # Start Qserver on port 5000
