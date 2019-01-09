@@ -123,7 +123,7 @@ namespace QboxNext.Core.Encryption
                 0x43, 0x87, 0x65, 0x43
             };
 
-        public static byte[] Iv = new byte[] { };
+        public static byte[] Iv = new byte[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
         /// <summary>
         /// Encrypts the given string using AES Rijndael.
