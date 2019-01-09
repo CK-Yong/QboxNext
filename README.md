@@ -6,15 +6,14 @@ This repository is a modified clone of Qplatform.
 The modifications are:
 
 - only the code needed for Qserver and the Qbox simulator was kept, the rest was removed,
-- a stand-alone version DumpQBX was added,
-- all occurrences of 'Qurrent' were replaces with 'QboxNext',
+- a stand-alone version of DumpQBX was added,
+- a stand-alone version of ParseQboxMessage was added,
+- all root namespaces were set to 'QboxNext',
 - all sensitive information like connectionstrings and signing keys was removed,
-- the actual encryption key to encrypt and decrypt Qbox messages was replaced by an empty key,
 - all csprojs have been rebuilt as .NET Core projects,
-- only the latest firmware will be returned by the firmware controller,
 - all databases have been removed: metadata SQL database, metadata cache Redis database and status Mongo database),
-- no Qbox metadata is being retrieved from a database, for now only a smartmeter with S0 (Eltako) is supported.
-- all Qbox data is written to d:\QboxNextData.
+- no Qbox metadata is being retrieved from a database, for now only a Qbox Duo with Qbox Solar attached to a smartmeter supported.
+- all Qbox data is written to d:\QboxNextData on Windows and /var/qboxnextdata on Linux (yes, it runs on Linux now!).
 
 ## How to build
 
@@ -45,6 +44,18 @@ You can also use the following command from the directory where the QboxNext.Qse
 
 An ASP.NET application that receives and processes messages from Qboxes. When run it uses the built-in [Kestrel](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-2.2) web server. 
 It will run on port 5000, the default Kestrel port.
+
+### Creating binaries for the Raspberry Pi
+
+On Windows, in the root directory of the repository enter
+
+```
+dotnet publish -c Release -r linux-arm
+```
+
+The files that need to be copied to the Raspberry Pi are then located in QboxNext.Qserver\bin\Release\netcoreapp2.1\linux-arm.
+
+### Testing on Windows
 
 When Qserver is running it can be tested using Powershell. Open Powershell and run this snippet:
 
@@ -88,7 +99,7 @@ ParsedHtml        : mshtml.HTMLDocumentClass
 RawContentLength  : 14
 ```
 
-### For Linux
+### Testing on Linux
 
 Copy the script below into a text file, save it and give it a name like "testqserver.sh".
 
@@ -161,6 +172,16 @@ sudo sh -c \
 --qbx=/var/qboxnextdata/Qbox_00-00-000-000/00-00-000-000_00000181.qbx \
 --values \
 > /var/qboxnextdata/Qbox_00-00-000-000/00-00-000-000_00000181.qbx.txt'
+```
+
+## ParseQboxMessage
+
+ParseQboxMessage will parse the Qbox messages given on the command line and show its contents in a readable format. You can find those messages in the Qserver log files, look for lines containing 'input:'.
+
+### Windows and Linux
+
+```
+dotnet QboxNext.ParseQboxMessage.dll --message=<message>
 ```
 
 ## SimulateQbox
