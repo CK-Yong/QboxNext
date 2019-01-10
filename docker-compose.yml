@@ -1,0 +1,11 @@
+version: '3'
+services:
+  qserver:
+    build: ./QboxNext.Qserver
+    ports:
+     - "5000:5000"
+    volumes:
+     - qboxnextdata:/var/qboxnextdata
+
+volumes:
+  qboxnextdata:
