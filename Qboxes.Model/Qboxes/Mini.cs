@@ -1,25 +1,18 @@
 using System.Collections.Generic;
-using System.Threading;
-using NLog;
-using QboxNext.Core;
-using QboxNext.Core.Utils;
-using QboxNext.Qserver.Core.Factories;
-using QboxNext.Qserver.Core.Model;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using Qboxes.Classes;
-using System.Xml;
-using QboxNext.Qserver.Core.Interfaces;
-using System.Text;
-using QboxNext.Qboxes.Parsing.Factories;
+using Qboxes.Model.Qboxes;
 using QboxNext.Qboxes.Parsing.Protocols;
-
 
 namespace Qboxes
 {
-    public static class Mini
+    public class Mini
     {
+        public Mini()
+        {
+            Counters = new List<Counter>();
+        }
+
+        public IList<Counter> Counters { get; set; }
+
         public static string WriteMeterType(DeviceMeterType deviceMeterType)
         {
             var result = new BaseParseResult();

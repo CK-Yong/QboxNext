@@ -71,9 +71,9 @@ namespace QboxNext.Qserver.Classes
         {
             try
             {
-                //SAM: previously the Qbox metadata was read from Redis. For now we take a huge shortcut and
+                // SAM: previously the Qbox metadata was read from Redis. For now we take a huge shortcut and
                 // only support smart meters EG with S0.
-                //TODO: make the datastorepath configurable.
+                // This code is tied to a similar construct in Qservice (SeriesRetriever.GetSeriesAtCounterLevel).
                 var counterSensorMappingsSmartMeter = new CounterSensorMappingPoco
                 {
                     PeriodeBegin = new DateTime(2000, 1, 1),
@@ -83,7 +83,7 @@ namespace QboxNext.Qserver.Classes
                 var mini = new MiniPoco()
                 {
                     SerialNumber = sn,
-                    DataStorePath = Environment.OSVersion.Platform == PlatformID.Win32NT ? @"D:\QboxNextData" : "/var/qboxnextdata",
+                    DataStorePath = QboxNext.Core.Config.DataStorePath,
                     Counters = new List<CounterPoco>()
                     {
                         new CounterPoco
