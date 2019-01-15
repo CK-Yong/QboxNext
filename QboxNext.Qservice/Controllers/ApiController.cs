@@ -45,12 +45,12 @@ namespace QboxNext.Qservice.Controllers
         }
 
         /// <summary>
-        /// Derives the series resolution from the given timeframe. The UI makes sure
+        /// Derives the series resolution from the given time frame. The UI makes sure
         /// that when the customer requests data for the year graph, the @from and to are
         /// in different months. Otherwise the @from and to are in the same month.
         /// </summary>
-        /// <param name="from">The start of the timeframe</param>
-        /// <param name="to">The end of the timeframe</param>
+        /// <param name="from">The start of the time frame</param>
+        /// <param name="to">The end of the time frame</param>
         /// <returns>Series resolution</returns>
         private SeriesResolution DeriveResolution(DateTime from, DateTime to)
         {
@@ -68,9 +68,21 @@ namespace QboxNext.Qservice.Controllers
             return ((firstDayToInclude.Month != lastDayToInclude.Month) || firstDayToInclude.Year != lastDayToInclude.Year);
         }
 
-        private bool IsPossiblyWeekGraph(TimeSpan span)
+        private static bool IsPossiblyWeekGraph(TimeSpan span)
         {
-            return span.TotalMinutes == (int)SeriesResolution.Week;
+            return Math.Abs(span.TotalMinutes - (int)SeriesResolution.Week) < 60;
+        }
+
+        /// <summary>
+        /// Get all data related to current power usage or generation.
+        /// </summary>
+        [HttpGet("/api/getlivedata")]
+        public ActionResult GetLiveData(string qboxSerial)
+        {
+            var liveDataRetriever = new LiveDataRetriever();
+            var data = liveDataRetriever.Retrieve(qboxSerial, DateTime.UtcNow);
+
+            return new OkObjectResult(new { result = true, data });
         }
     }
 }

@@ -14,6 +14,12 @@ namespace QboxNext.Qservice.Classes
         /// <summary>
         /// Build the C# result that can be used to generate the Json result for GetSeries.
         /// </summary>
+        IEnumerable<ValueSerie> RetrieveSerieValuesForAccount(string inQboxSerial, DateTime inFromUtc, DateTime inToUtc,
+            SeriesResolution inResolution);
+
+        /// <summary>
+        /// Build the C# result that can be used to generate the Json result for GetSeries.
+        /// </summary>
         List<ValueSerie> RetrieveQboxSeries(RetrieveSeriesParameters parameters);
     }
 }
