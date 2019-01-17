@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using QboxNext.Core;
 using QboxNext.Core.Utils;
 
 namespace QboxNext.Qservice.Classes
 {
-    public interface IOldSeriesRetriever
+    public interface ISeriesRetriever
     {
         /// <summary>
         /// Build the C# result that can be used to generate the Json result for GetSeries.
