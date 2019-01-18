@@ -21,8 +21,20 @@ Finally
 	Pop-Location
 }
 
-function DumpQbx([string]$qboxSerial, [int]$counter)
+function DumpQbx([string]$qboxSerial, [string]$counterId)
 {
 	$exePath = Join-Path $PSScriptRoot ..\QboxNext.DumpQbx\bin\Debug\netcoreapp2.1\QboxNext.DumpQbx.dll
-	dotnet $exePath "--qbx=D:\QboxNextData\Qbox_$qboxserial\$qboxserial_" "--qboxserial=00-00-000-000" "--metertype=smart" "--pattern=181:flat(2);182:zero;281:zero;282:zero;2421:zero"
+	$qbxPath = "D:\QboxNextData\Qbox_$qboxserial\${qboxserial}_${counterId}.qbx"
+	if (Test-Path $qbxPath)
+	{
+		Write-Output "Dumping $qbxPath..."
+		dotnet $exePath "--qbx=$qbxPath" "--values" > "$qbxPath.txt"
+	}
 }
+
+DumpQbx $qboxSerial "00000181"
+DumpQbx $qboxSerial "00000181"
+DumpQbx $qboxSerial "00000281"
+DumpQbx $qboxSerial "00000282"
+DumpQbx $qboxSerial "00002421"
+DumpQbx $qboxSerial "00000001_Client0_secondary"
