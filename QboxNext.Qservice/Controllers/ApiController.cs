@@ -77,10 +77,10 @@ namespace QboxNext.Qservice.Controllers
         /// Get all data related to current power usage or generation.
         /// </summary>
         [HttpGet("/api/getlivedata")]
-        public ActionResult GetLiveData(string qboxSerial)
+        public ActionResult GetLiveData(string sn)
         {
             var liveDataRetriever = new LiveDataRetriever();
-            var data = liveDataRetriever.Retrieve(qboxSerial, DateTime.UtcNow);
+            var data = liveDataRetriever.Retrieve(sn, DateTime.UtcNow);
 
             return new OkObjectResult(new { result = true, data });
         }
