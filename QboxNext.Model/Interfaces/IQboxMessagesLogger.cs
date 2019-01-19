@@ -1,7 +1,6 @@
 ﻿using QboxNext.Core.Dto;
 
-
-namespace Qboxes.Interfaces
+namespace QboxNext.Model.Interfaces
 {
 	/// <summary>
 	/// Interface voor het loggen van Qbox berichten.

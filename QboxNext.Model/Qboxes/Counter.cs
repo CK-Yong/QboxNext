@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using NLog.Fluent;
-using Qboxes.Model.Logging;
 using QboxNext.Core;
 using QboxNext.Core.Utils;
+using QboxNext.Model.Logging;
 using QboxNext.Qboxes.Parsing.Protocols;
 using QboxNext.Qserver.Core.Factories;
 using QboxNext.Qserver.Core.Interfaces;
 using QboxNext.Qserver.Core.Statistics;
 
-namespace Qboxes.Model.Qboxes
+namespace QboxNext.Model.Qboxes
 {
     public class Counter
     {

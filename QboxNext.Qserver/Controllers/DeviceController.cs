@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
-using Qboxes.Classes;
-using Qboxes.Interfaces;
 using QboxNext.Core.Log;
+using QboxNext.Model.Classes;
+using QboxNext.Model.Interfaces;
 using QboxNext.Qserver.Classes;
 
 namespace QboxNext.Qserver.Controllers

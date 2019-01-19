@@ -1,18 +1,18 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using QboxNext.Core.Dto;
 using QboxNext.Core.Log;
 using QboxNext.Core.Utils;
-using QboxNext.Qserver.Core.Interfaces;
-using System.Collections.Generic;
-using Qboxes.Interfaces;
+using QboxNext.Model.Interfaces;
 using QboxNext.Qboxes.Parsing.Elements;
 using QboxNext.Qboxes.Parsing.Factories;
 using QboxNext.Qboxes.Parsing.Protocols;
+using QboxNext.Qserver.Core.Interfaces;
 using QboxNext.Qserver.Core.Model;
 
-namespace Qboxes.Classes
+namespace QboxNext.Model.Classes
 {
     /// <summary>
     /// Class that encapsulates the handling of the Qbox mini data dump
@@ -167,7 +167,7 @@ namespace Qboxes.Classes
             var seconds = Convert.ToInt32((DateTime.Now.Subtract(Epoch)).TotalSeconds);
             _result.Write(seconds);
 
-			_result.Write((byte)_context.Mini.Offset);
+			_result.Write(_context.Mini.Offset);
 
 			// SequenceNr is 0-255.
 			bool canSendAutoStatusCommand = (inResponseType == ResponseType.Normal) && CanSendAutoStatusCommand((byte)_result.SequenceNr);

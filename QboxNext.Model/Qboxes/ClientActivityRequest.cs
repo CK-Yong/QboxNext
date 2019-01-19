@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Qboxes
+namespace QboxNext.Model.Qboxes
 {
 	public enum ClientActivityRequest
 	{

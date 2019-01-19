@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Qboxes;
-using Qboxes.Model.Qboxes;
+using QboxNext.Model.Qboxes;
 using QboxNext.Core;
 using QboxNext.Core.Dto;
 using QboxNext.Core.Utils;
 using QboxNext.Qbiz.Dto;
 using QboxNext.Qboxes.Parsing.Protocols;
 using QboxNext.Qserver.Core.Interfaces;
-using QboxNext.Qservice.Classes;
 using QboxNext.Qserver.Core.Statistics;
 using QboxNext.Qservice.Logging;
 

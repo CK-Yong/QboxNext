@@ -1,14 +1,15 @@
-﻿using NLog;
-using Qboxes.Utils;
-using QboxNext.Qserver.Core.Interfaces;
-using QboxNext.Qserver.Core.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
+using QboxNext.Model.Qboxes;
+using QboxNext.Model.Utils;
 using QboxNext.Qboxes.Parsing.Elements;
 using QboxNext.Qboxes.Parsing.Protocols;
+using QboxNext.Qserver.Core.Interfaces;
+using QboxNext.Qserver.Core.Model;
 
-namespace Qboxes.Classes
+namespace QboxNext.Model.Classes
 {
 	/// <summary>
 	/// QboxResponseBuilder builds a list of commands to send back to the Qbox.

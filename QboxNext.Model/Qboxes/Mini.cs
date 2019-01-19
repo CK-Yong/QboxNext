@@ -1,9 +1,7 @@
-using System.Collections.Generic;
-using Qboxes.Model.Qboxes;
 using QboxNext.Qboxes.Parsing.Protocols;
+using System.Collections.Generic;
 
-// ReSharper disable once CheckNamespace
-namespace Qboxes
+namespace QboxNext.Model.Qboxes
 {
     public class Mini
     {

@@ -1,6 +1,6 @@
 ﻿using QboxNext.Core.Dto;
 
-namespace Qboxes.Model.Qboxes
+namespace QboxNext.Model.Qboxes
 {
     public class Device
     {

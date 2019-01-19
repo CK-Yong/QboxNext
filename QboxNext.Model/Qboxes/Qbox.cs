@@ -1,6 +1,6 @@
 ﻿using QboxNext.Qserver.Core.Interfaces;
 
-namespace Qboxes.Model.Qboxes
+namespace QboxNext.Model.Qboxes
 {
     public class Qbox
     {
