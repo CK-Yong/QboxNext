@@ -31,11 +31,21 @@ namespace QboxNext.Qserver.Controllers
         {
             Log.Trace("Enter");
             var qboxDataDumpContext = _qboxDataDumpContextFactory.CreateContext(ControllerContext, pn, sn);
-            Log.Info(qboxDataDumpContext.Mini.SerialNumber);
-            string result = new MiniDataHandler(qboxDataDumpContext, _qboxMessagesLogger).Handle();
-            Log.Info("Parsing Done: {0}", result);
-            Log.Trace("Return");
-            return Content(result);
+            try
+            {
+                Log.Info(qboxDataDumpContext.Mini.SerialNumber);
+                string result = new MiniDataHandler(qboxDataDumpContext, _qboxMessagesLogger).Handle();
+                Log.Info("Parsing Done: {0}", result);
+                Log.Trace("Return");
+                return Content(result);
+            }
+            finally
+            {
+                foreach (var counterPoco in qboxDataDumpContext.Mini.Counters.Where(counterPoco => counterPoco.StorageProvider != null))
+                {
+                    counterPoco.StorageProvider.Dispose();
+                }
+            }
         }
     }
 }
