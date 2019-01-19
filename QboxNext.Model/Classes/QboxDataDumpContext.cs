@@ -2,7 +2,7 @@
 using QboxNext.Core.Utils;
 using QboxNext.Qserver.Core.Model;
 
-namespace Qboxes.Classes
+namespace QboxNext.Model.Classes
 {
     public class QboxDataDumpContext
     {        

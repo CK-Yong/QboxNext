@@ -1,8 +1,7 @@
-﻿using Qboxes.Interfaces;
-using QboxNext.Core.Dto;
+﻿using QboxNext.Core.Dto;
+using QboxNext.Model.Interfaces;
 
-
-namespace Qboxes.Classes
+namespace QboxNext.Model.Classes
 {
 	/// <summary>
 	/// QboxMessages logger die niks doet.

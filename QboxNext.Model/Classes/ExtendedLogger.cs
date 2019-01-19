@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Qboxes.Classes
+namespace QboxNext.Model.Classes
 {
     public class ExtendedLogger : IDisposable
     {

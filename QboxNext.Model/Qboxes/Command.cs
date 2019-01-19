@@ -1,17 +1,11 @@
 using QboxNext.Qboxes.Parsing.Protocols;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
-namespace Qboxes
+namespace QboxNext.Model.Qboxes
 {
-    using System.Text;
-    using System;
-    using System.Linq;
-    using QboxNext.Qserver.Core.Interfaces;
-    using QboxNext.Core.Utils;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.Reflection;
-
-	/// <summary>
+    /// <summary>
     /// refactor, mix of properties and enums at the moment.
     /// range 0x80 till 0x9F (properties) can changed in ActivityRequests
     /// </summary>
@@ -52,8 +46,8 @@ namespace Qboxes
             {
                 case DeviceMeterType.Ferraris_Black_Toothed:
                     // Set calibration to 10 minutes
-					cmd.Write(RequestCalibrateMeter);
-					cmd.Write((byte)10);
+                    cmd.Write(RequestCalibrateMeter);
+                    cmd.Write((byte)10);
                     break;
                 case DeviceMeterType.LED_TypeI:
                 case DeviceMeterType.LED_TypeII:
@@ -66,7 +60,7 @@ namespace Qboxes
                     }
                     else
                     {
-						cmd.Write(RequestRestart);
+                        cmd.Write(RequestRestart);
                     }
                     break;
             }
@@ -74,20 +68,20 @@ namespace Qboxes
         }
 
 
-		/// <summary>
-		/// Encode bytes to strings appropriate for putting in the response message.
-		/// </summary>
-		public static string Encode(params byte[] inBytes)
-		{
-			return BaseParseResult.HexStr(inBytes);
-		}
+        /// <summary>
+        /// Encode bytes to strings appropriate for putting in the response message.
+        /// </summary>
+        public static string Encode(params byte[] inBytes)
+        {
+            return BaseParseResult.HexStr(inBytes);
+        }
 
 
-		public const byte RequestUpgradeFirmware = 0x80;
-		public const byte RequestRestart = 0x81;
-		public const byte RequestRestartWithFactoryDefaults = 0x82;
-		public const byte RequestCalibrateMeter = 0x84;
-		public const byte RequestDeviceSetting = 0x85;
+        public const byte RequestUpgradeFirmware = 0x80;
+        public const byte RequestRestart = 0x81;
+        public const byte RequestRestartWithFactoryDefaults = 0x82;
+        public const byte RequestCalibrateMeter = 0x84;
+        public const byte RequestDeviceSetting = 0x85;
     }
 }
 // Note 1:

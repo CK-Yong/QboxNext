@@ -1,4 +1,4 @@
-﻿namespace Qboxes.Model.Qboxes
+﻿namespace QboxNext.Model.Qboxes
 {
     public class DataStore
     {

@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFrameworks>net451;netstandard2.0</TargetFrameworks>
+    <AssemblyName>QboxNext.Model</AssemblyName>
+    <RootNamespace>QboxNext.Model</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,8 +11,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QboxNext.Core\QboxNext.Core.csproj" />
+    <ProjectReference Include="..\QboxNext.Qserver.Core\QboxNext.Qserver.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
