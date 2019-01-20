@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.Extensions.Logging;
+using NLog.Fluent;
 using QboxNext.Core;
 using QboxNext.Core.Utils;
-using QboxNext.Model.Logging;
+using QboxNext.Logging;
 using QboxNext.Qboxes.Parsing.Protocols;
 using QboxNext.Qserver.Core.Factories;
 using QboxNext.Qserver.Core.Interfaces;
@@ -14,7 +16,7 @@ namespace QboxNext.Model.Qboxes
 {
     public class Counter
     {
-        private static readonly ILog Log = LogProvider.GetCurrentClassLogger();
+        private static readonly ILogger Logger = QboxNextLogProvider.CreateLogger<Counter>();
 
         public int CounterId { get; set; }
         public IEnumerable<CounterDeviceMapping> CounterDeviceMappings { get; set; }
@@ -32,7 +34,7 @@ namespace QboxNext.Model.Qboxes
 
         public IList<SeriesValue> GetSeries(Unit eenheid, DateTime from, DateTime to, SeriesResolution resolution, bool negate, bool smoothing)
         {
-            Log.Trace("Enter, counter = {0}, unit = {1}, from = {2}, to = {3}, resolution = {4}, negate = {5}, smoothing = {6}",
+            Logger.LogTrace("Enter, counter = {0}, unit = {1}, from = {2}, to = {3}, resolution = {4}, negate = {5}, smoothing = {6}",
                 CounterId, eenheid, from, to, resolution, negate, smoothing);
 
             Guard.IsBefore(from, to, "From cannot be later than to");

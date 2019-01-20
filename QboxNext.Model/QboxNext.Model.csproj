@@ -2,21 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>QboxNext.Model</AssemblyName>
-    <RootNamespace>QboxNext.Model</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibLog" Version="5.0.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <ProjectReference Include="..\QboxNext.Core\QboxNext.Core.csproj" />
+    <ProjectReference Include="..\QboxNext.Logging\QboxNext.Logging.csproj" />
+    <ProjectReference Include="..\QboxNext.Qserver.Core\QboxNext.Qserver.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\QboxNext.Core\QboxNext.Core.csproj" />
-    <ProjectReference Include="..\QboxNext.Qserver.Core\QboxNext.Qserver.Core.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
   </ItemGroup>
 
 </Project>
