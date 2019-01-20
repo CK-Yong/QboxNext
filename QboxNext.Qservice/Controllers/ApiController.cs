@@ -13,9 +13,9 @@ namespace QboxNext.Qservice.Controllers
         private static readonly Logger Log = QboxNextLogFactory.GetLogger("ApiController");
         private readonly ISeriesRetriever _seriesRetriever;
 
-        public ApiController()
+        public ApiController(ISeriesRetriever seriesRetriever)
         {
-            _seriesRetriever = new SeriesRetriever();
+            _seriesRetriever = seriesRetriever ?? throw new ArgumentNullException(nameof(seriesRetriever));
         }
 
         [HttpGet("/api/getseries")]

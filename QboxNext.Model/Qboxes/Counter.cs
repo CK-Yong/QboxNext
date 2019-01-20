@@ -8,15 +8,21 @@ using QboxNext.Core;
 using QboxNext.Core.Utils;
 using QboxNext.Logging;
 using QboxNext.Qboxes.Parsing.Protocols;
-using QboxNext.Qserver.Core.Factories;
-using QboxNext.Qserver.Core.Interfaces;
 using QboxNext.Qserver.Core.Statistics;
+using QboxNext.Qserver.StorageProviders;
 
 namespace QboxNext.Model.Qboxes
 {
     public class Counter
     {
         private static readonly ILogger Logger = QboxNextLogProvider.CreateLogger<Counter>();
+
+        private readonly IStorageProviderFactory _storageProviderFactory;
+
+        public Counter(IStorageProviderFactory storageProviderFactory)
+        {
+            _storageProviderFactory = storageProviderFactory ?? throw new ArgumentNullException(nameof(storageProviderFactory));
+        }
 
         public int CounterId { get; set; }
         public IEnumerable<CounterDeviceMapping> CounterDeviceMappings { get; set; }
@@ -114,7 +120,15 @@ namespace QboxNext.Model.Qboxes
             {
                 Debug.Assert(Qbox.SerialNumber != null, "Qbox.SerialNumber != null");
 
-                StorageProvider = StorageProviderFactory.GetStorageProvider(false, Qbox.Storageprovider, Qbox.SerialNumber, Qbox.DataStore.Path, CounterId, Qbox.Precision, StorageId);
+                var storageProviderContext = new StorageProviderContext
+                {
+                    SerialNumber = Qbox.SerialNumber,
+                    CounterId = CounterId,
+                    Precision = Qbox.Precision,
+                    StorageId = StorageId ?? ""
+                };
+
+                StorageProvider = _storageProviderFactory.GetStorageProvider(storageProviderContext);
                 return true;
             }
             return false;

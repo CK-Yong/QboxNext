@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using QboxNext.Qboxes.Parsing.Protocols;
-using QboxNext.Qserver.Core.Factories;
 using QboxNext.Qserver.Core.Interfaces;
+using QboxNext.Qserver.StorageProviders;
 
 namespace QboxNext.Qserver.Core.Model
 {
@@ -21,7 +21,6 @@ namespace QboxNext.Qserver.Core.Model
         public bool ExtendedLogging { get; set; } //Refactor: IsLogEnabled en ExtendedLogging kunnen worden samengebracht in QboxesLogLevel 
         public bool IsLogEnabled { get; set; }
         public QboxLogLevel QboxesLogLevel { get; set; }
-        public string DataStorePath { get; set; }
         public MiniState State { get; set; }
         public Precision Precision { get; set; }
 
@@ -37,17 +36,17 @@ namespace QboxNext.Qserver.Core.Model
         public IEnumerable<CounterPoco> Counters { get; set; }
 
 
-		/// <summary>
-		/// Prepare the counters so they can be used.
-		/// </summary>
-		/// <remarks>
-		/// We need to set the QboxSerial because that will be part of the key used to store the last value.
-		/// </remarks>
-		public void PrepareCounters()
-		{
-			foreach (var counter in Counters)
-				counter.QboxSerial = SerialNumber;
-		}
+        /// <summary>
+        /// Prepare the counters so they can be used.
+        /// </summary>
+        /// <remarks>
+        /// We need to set the QboxSerial because that will be part of the key used to store the last value.
+        /// </remarks>
+        public void PrepareCounters()
+        {
+            foreach (var counter in Counters)
+                counter.QboxSerial = SerialNumber;
+        }
 
 
         /// <summary>
@@ -60,25 +59,25 @@ namespace QboxNext.Qserver.Core.Model
         public DeviceMeterType SecondaryMeterType { get; set; }
 
 
-		/// <summary>
-		/// Check if inMeterType is present in the Qbox topology.
-		/// </summary>
-	    public bool IsMeterTypePresent(DeviceMeterType inMeterType)
-	    {
-		    if (MeterType == inMeterType)
-			    return true;
+        /// <summary>
+        /// Check if inMeterType is present in the Qbox topology.
+        /// </summary>
+        public bool IsMeterTypePresent(DeviceMeterType inMeterType)
+        {
+            if (MeterType == inMeterType)
+                return true;
 
-		    foreach (var client in Clients)
-		    {
-			    if (client.MeterType == inMeterType)
-				    return true;
-		    }
+            foreach (var client in Clients)
+            {
+                if (client.MeterType == inMeterType)
+                    return true;
+            }
 
-		    return false;
-	    }
+            return false;
+        }
 
 
-	    public bool AutoAnswer { get; set; }
+        public bool AutoAnswer { get; set; }
 
 
         /// <summary>
@@ -93,27 +92,25 @@ namespace QboxNext.Qserver.Core.Model
         public string MeterSettings { get; set; }
 
 
-        /// <summary>
-        /// The Storage Provider is an Enum to identify which StorageProvider will store the data 
-        /// for the Mini's counters. This value is used by the CounterPoco class to retrieve the 
-        /// StorageProvider from the factory.
-        /// </summary>
-        public StorageProvider StorageProvider { get; set; }
-
-
         public MiniPoco()
         {
             QboxStatus = new QboxStatus();
         }
 
 
-        public void SetStorageProvider()
+        public void SetStorageProvider(IStorageProviderFactory storageProviderFactory)
         {
             foreach (var counterPoco in Counters)
             {
-                counterPoco.StorageProvider = StorageProviderFactory.GetStorageProvider(
-                    false, StorageProvider, SerialNumber, DataStorePath,
-                    counterPoco.CounterId, Precision, counterPoco.StorageId);
+                var storageProviderContext = new StorageProviderContext
+                {
+                    SerialNumber = SerialNumber,
+                    CounterId = counterPoco.CounterId,
+                    Precision = Precision,
+                    StorageId = counterPoco.StorageId ?? ""
+                };
+
+                counterPoco.StorageProvider = storageProviderFactory.GetStorageProvider(storageProviderContext);
             }
         }
 
@@ -125,13 +122,13 @@ namespace QboxNext.Qserver.Core.Model
         }
 
 
-		/// <summary>
-		/// Remove all cached last values of the counters.
-		/// </summary>
-	    public void RemoveLastValues()
-	    {
-			foreach (var counterPoco in Counters)
-				counterPoco.RemoveLastValue();
-		}
+        /// <summary>
+        /// Remove all cached last values of the counters.
+        /// </summary>
+        public void RemoveLastValues()
+        {
+            foreach (var counterPoco in Counters)
+                counterPoco.RemoveLastValue();
+        }
     }
 }

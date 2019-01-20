@@ -1,10 +1,16 @@
 ﻿using System;
 using System.IO;
-using System.Text.RegularExpressions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using QboxNext.Core.CommandLine;
+using QboxNext.Logging;
 using QboxNext.MergeQbx.Utils;
-using QboxNext.Qserver.Core.DataStore;
 using QboxNext.Qserver.Core.Interfaces;
+using QboxNext.Qserver.StorageProviders;
+using QboxNext.Qserver.StorageProviders.File;
 
 namespace QboxNext.MergeQbx
 {
@@ -16,13 +22,59 @@ namespace QboxNext.MergeQbx
         [Option("", "new", Required = true, HelpText = "Path to new QBX file")]
         public string NewQbxPath { get; set; }
 
+        public static IServiceProvider ApplicationServiceProvider { get; set; }
+
         static void Main(string[] args)
         {
+            // Setup static logger factory
+            ILoggerFactory loggerFactory = QboxNextLogProvider.LoggerFactory = new LoggerFactory();
+
+            IHost host = new HostBuilder()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .ConfigureHostConfiguration(config =>
+                {
+                    config.AddEnvironmentVariables();
+
+                    if (args != null)
+                    {
+                        config.AddCommandLine(args);
+                    }
+                })
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    IHostingEnvironment env = hostingContext.HostingEnvironment;
+
+                    config
+                        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                })
+                .ConfigureLogging((hostingContext, logging) =>
+                {
+                    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                    logging.AddConsole();
+                    logging.AddDebug();
+                })
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services
+                        .AddSingleton(loggerFactory)
+                        .AddLogging();
+
+                    services
+                        .Configure<kWhStorageOptions>(hostContext.Configuration.GetSection("kWhStorage"))
+                        .AddStorageProvider<kWhStorage>();
+                })
+                .UseConsoleLifetime()
+                .Build();
+
+            ApplicationServiceProvider = host.Services;
+
             var program = new Program();
             var settings = new CommandLineParserSettings { IgnoreUnknownArguments = true, CaseSensitive = false };
             ICommandLineParser parser = new CommandLineParser(settings);
             if (parser.ParseArguments(args, program, System.Console.Error))
             {
+                // TODO: further utilize IHost/IHostService
                 program.Run();
             }
             else
@@ -55,11 +107,20 @@ namespace QboxNext.MergeQbx
 
         private kWhStorage GetStorageProviderForPath(string originalQbxPath)
         {
-            var serial = QbxPathUtils.GetSerialFromPath(originalQbxPath);
-            var baseDir = QbxPathUtils.GetBaseDirFromPath(originalQbxPath);
-            var counterId = QbxPathUtils.GetCounterIdFromPath(originalQbxPath);
-            var storageId = QbxPathUtils.GetStorageIdFromPath(originalQbxPath);
-            return new kWhStorage(serial, baseDir, counterId, Precision.mWh, storageId);
+            var storageProviderContext = new StorageProviderContext
+            {
+                SerialNumber = QbxPathUtils.GetSerialFromPath(originalQbxPath),
+                CounterId = QbxPathUtils.GetCounterIdFromPath(originalQbxPath),
+                Precision = Precision.mWh,
+                StorageId = QbxPathUtils.GetStorageIdFromPath(originalQbxPath)
+            };
+
+            IOptions<kWhStorageOptions> options = ApplicationServiceProvider.GetRequiredService<IOptions<kWhStorageOptions>>() ?? new OptionsWrapper<kWhStorageOptions>(new kWhStorageOptions());
+
+            // Override path.
+            options.Value.DataStorePath = QbxPathUtils.GetBaseDirFromPath(originalQbxPath);
+
+            return new kWhStorage(options, storageProviderContext);
         }
 
     }

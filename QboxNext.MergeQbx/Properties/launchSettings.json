@@ -1,8 +1,12 @@
 {
+  "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
     "QboxNext.MergeQbx": {
       "commandName": "Project",
-      "commandLineArgs": "--original=d:\\temp\\Qbox_15-49-002-081\\15-49-002-081_00000181_Client0.qbx --new=d:\\temp\\Qbox_15-49-002-081\\15-49-002-081_00000181.qbx"
+      "commandLineArgs": "--original=d:\\temp\\Qbox_15-49-002-081\\15-49-002-081_00000181_Client0.qbx --new=d:\\temp\\Qbox_15-49-002-081\\15-49-002-081_00000181.qbx",
+      "environmentVariables": {
+	    "environment": "Development"
+	  }
     }
   }
 }

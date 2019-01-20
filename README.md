@@ -36,9 +36,17 @@ Make sure you're either in the folder, or pointing the command to the right fold
 To run Qserver, right click on the QboxNext.Qserver project in the Solution Explorer and select 'Set as Startup Project'. 
 Then in the menu select Debug->Start Debugging.
 
-You can also use the following command from the directory where the QboxNext.Qserver.dll was built (usually located in `QboxNext.Qserver/bin/Debug/netcoreapp2.1`):
+You can also use the following command from the project directory (`.\QboxNext.Qserver`):
 
-`dotnet QboxNext.Qserver.dll`
+```
+dotnet run
+```
+
+To override specific options from the command line:
+
+```
+dotnet run --kWhStorage:DataStorePath=D:\mydatafolder
+```
 
 ## Qserver
 
@@ -143,8 +151,8 @@ Another option is to run the Qbox simulator. See SimulateQbox.
 DumpQbx is a tool to convert a QBX file into a readable text file. To use it open a command shell in the local git repo and enter:
 
 ```dos
-cd QboxNext.DumpQbx\bin\Debug\netcoreapp2.1
-dotnet QboxNext.DumpQbx.dll --qbx=d:\QboxNextData\Qbox_15-46-002-442\15-46-002-442_00000181.qbx --values > d:\QboxNextData\Qbox_15-46-002-442\15-46-002-442_00000181.qbx.txt
+cd QboxNext.DumpQbx
+dotnet run --qbx=d:\QboxNextData\Qbox_15-46-002-442\15-46-002-442_00000181.qbx --values > d:\QboxNextData\Qbox_15-46-002-442\15-46-002-442_00000181.qbx.txt
 ```
 
 The generated text file will look like this:
@@ -167,8 +175,9 @@ The column 'quality' specifies if the value was a value received by Qserver or a
 ### For Linux
 Run the command below. You may have to replace the file paths depending on the Qbox you want to dump. Check the `/var/qboxnext` folder to see the folders with qbx files in them.
 ```
+cd QboxNext.DumpQbx
 sudo sh -c \
-'dotnet QboxNext.DumpQbx.dll \
+'dotnet run \
 --qbx=/var/qboxnextdata/Qbox_00-00-000-000/00-00-000-000_00000181.qbx \
 --values \
 > /var/qboxnextdata/Qbox_00-00-000-000/00-00-000-000_00000181.qbx.txt'
@@ -181,7 +190,8 @@ ParseQboxMessage will parse the Qbox messages given on the command line and show
 ### Windows and Linux
 
 ```
-dotnet QboxNext.ParseQboxMessage.dll --message=<message>
+cd QboxNext.ParseQboxMessage
+dotnet run --message=<message>
 ```
 
 ## SimulateQbox
@@ -190,21 +200,21 @@ SimulateQbox is a simulator that can simulate Qboxes attached to several types o
 To use it make sure Qserver is running, open a command shell in the local git repo and enter:
 
 ```dos
-cd QboxNext.SimulateQbox\bin\Debug\netcoreapp2.1
-dotnet QboxNext.SimulateQbox.dll --qserver=http://localhost:5000 --qboxserial=00-00-000-000 --metertype=smart --pattern=181:flat(2);182:zero;281:zero;282:zero;2421:zero
+cd QboxNext.SimulateQbox
+dotnet run --qserver=http://localhost:5000 --qboxserial=00-00-000-000 --metertype=smart --pattern=181:flat(2);182:zero;281:zero;282:zero;2421:zero
 ```
 
 To view an explanation of the different meter types and patterns, run SimulateQbox without parameters:
 
 ```dos
-dotnet QboxNext.SimulateQbox.dll
+dotnet run
 ```
 
 ### For Linux
 
-Run the following command from the `./QboxNext.Qserver/bin/Debug/netcoreapp2.1` directory.
+Run the following command from the `./QboxNext.SimulateQbox` directory.
 ```bash
-dotnet QboxNext.SimulateQbox.dll --qserver=http://localhost:5000 \
+dotnet run --qserver=http://localhost:5000 \
 --qboxserial=00-00-000-000 --metertype=smart \
 --pattern='181:flat(2);182:zero;281:zero;282:zero;2421:zero'
 ```

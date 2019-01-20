@@ -7,8 +7,8 @@ using Microsoft.Extensions.Logging;
 using QboxNext.Logging;
 using QboxNext.Qboxes.Parsing.Extensions;
 using QboxNext.Qserver.Classes;
-using QboxNext.Qserver.Core.DataStore;
-using QboxNext.Qserver.Core.Factories;
+using QboxNext.Qserver.StorageProviders;
+using QboxNext.Qserver.StorageProviders.File;
 using QboxNext.Qserver.Core.Interfaces;
 using QboxNext.Qserver.Core.Utils;
 
@@ -26,8 +26,15 @@ namespace QboxNext.Qserver
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddSingleton<IQboxDataDumpContextFactory>(new QboxDataDumpContextFactory());
+            services
+                .AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services
+                .Configure<kWhStorageOptions>(Configuration.GetSection("kWhStorage"))
+                .AddStorageProvider<kWhStorage>();
+
+            services.AddSingleton<IQboxDataDumpContextFactory, QboxDataDumpContextFactory>();
 
             services.AddParsers();
         }
@@ -37,7 +44,6 @@ namespace QboxNext.Qserver
         {
             QboxNextLogProvider.LoggerFactory = logFactory;
 
-            StorageProviderFactory.Register(StorageProvider.kWhStorage, typeof(kWhStorage));
             ClientRepositories.Queue = new MemoryQueue<string>();
 
             if (env.IsDevelopment())

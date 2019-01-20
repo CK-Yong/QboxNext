@@ -11,6 +11,7 @@ using QboxNext.Core.Utils;
 using QboxNext.Logging;
 using QboxNext.Qbiz.Dto;
 using QboxNext.Qboxes.Parsing.Protocols;
+using QboxNext.Qserver.StorageProviders;
 using QboxNext.Qserver.Core.Interfaces;
 using QboxNext.Qserver.Core.Statistics;
 
@@ -25,6 +26,8 @@ namespace QboxNext.Qservice.Classes
 
         private const int GenerationCounterId = 9999;
 
+        private readonly IStorageProviderFactory _storageProviderFactory;
+
         static SeriesRetriever()
         {
             Mapper.Initialize(cfg =>
@@ -32,6 +35,11 @@ namespace QboxNext.Qservice.Classes
                     .ForMember(dest => dest.Data, action => action.MapFrom(src => src.Data.Select(
                         s => s.Value).ToList()))
             );
+        }
+
+        public SeriesRetriever(IStorageProviderFactory storageProviderFactory)
+        {
+            _storageProviderFactory = storageProviderFactory ?? throw new ArgumentNullException(nameof(storageProviderFactory));
         }
 
         /// <summary>
@@ -188,7 +196,7 @@ namespace QboxNext.Qservice.Classes
         }
 
 
-        private static Dictionary<int, IList<SeriesValue>> GetSeriesAtCounterLevel(RetrieveSeriesParameters parameters)
+        private Dictionary<int, IList<SeriesValue>> GetSeriesAtCounterLevel(RetrieveSeriesParameters parameters)
         {
             var countersSeriesValue = new Dictionary<int, IList<SeriesValue>>();
             var fromNl = DateTimeUtils.UtcDateTimeToNl(parameters.FromUtc);
@@ -298,7 +306,7 @@ namespace QboxNext.Qservice.Classes
             return countersSeriesValue;
         }
 
-        private static Mini CreateMini(string qboxSerial)
+        private Mini CreateMini(string qboxSerial)
         {
             // SAM: previously the Qbox metadata was read from Redis. For now we take a huge shortcut and
             // only support Qbox Duo with smart meter EG with S0.
@@ -306,17 +314,14 @@ namespace QboxNext.Qservice.Classes
             var qbox = new Qbox
             {
                 SerialNumber = qboxSerial,
-                Precision = Precision.mWh,
-                DataStore = new DataStore
-                {
-                    Path = QboxNext.Core.Config.DataStorePath
-                }
+                Precision = Precision.mWh
             };
             var mini = new Mini
             {
-                Counters = new List<Counter>()
+                Counters = new List<Counter>
                 {
-                    new Counter
+                    // TODO: counters should be moved to factory so we don't need to pass along dependencies.
+                    new Counter(_storageProviderFactory)
                     {
                         CounterId = 181,
                         GroupId = CounterSource.Client0,
@@ -334,7 +339,7 @@ namespace QboxNext.Qservice.Classes
                         },
                         Qbox = qbox
                     },
-                    new Counter
+                    new Counter(_storageProviderFactory)
                     {
                         CounterId = 182,
                         GroupId = CounterSource.Client0,
@@ -352,7 +357,7 @@ namespace QboxNext.Qservice.Classes
                         },
                         Qbox = qbox
                     },
-                    new Counter
+                    new Counter(_storageProviderFactory)
                     {
                         CounterId = 281,
                         GroupId = CounterSource.Client0,
@@ -370,7 +375,7 @@ namespace QboxNext.Qservice.Classes
                         },
                         Qbox = qbox
                     },
-                    new Counter
+                    new Counter(_storageProviderFactory)
                     {
                         CounterId = 282,
                         GroupId = CounterSource.Client0,
@@ -388,7 +393,7 @@ namespace QboxNext.Qservice.Classes
                         },
                         Qbox = qbox
                     },
-                    new Counter
+                    new Counter(_storageProviderFactory)
                     {
                         CounterId = 2421,
                         GroupId = CounterSource.Client0,
@@ -406,7 +411,7 @@ namespace QboxNext.Qservice.Classes
                         },
                         Qbox = qbox
                     },
-                    new Counter
+                    new Counter(_storageProviderFactory)
                     {
                         CounterId = 1,
                         GroupId = CounterSource.Client0,

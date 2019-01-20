@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading;
+using Microsoft.Extensions.Options;
 using NLog;
 using QboxNext.Core;
 using QboxNext.Core.Log;
 using QboxNext.Core.Utils;
 using QboxNext.Qserver.Core.Exceptions;
-using QboxNext.Qserver.Core.Interfaces;
 using QboxNext.Qserver.Core.Statistics;
 using QboxNext.Qserver.Core.Utils;
 
-namespace QboxNext.Qserver.Core.DataStore
+namespace QboxNext.Qserver.StorageProviders.File
 {
-
     /// <summary>
     /// A persistent storage provider to store records of measurement data
     /// Included in the record are:
@@ -35,6 +34,9 @@ namespace QboxNext.Qserver.Core.DataStore
     public class kWhStorage : IStorageProvider
     // ReSharper restore InconsistentNaming
     {
+        private readonly StorageProviderContext _context;
+        private readonly kWhStorageOptions _options;
+
         #region private
 
         private bool FileExists
@@ -45,23 +47,9 @@ namespace QboxNext.Qserver.Core.DataStore
                 if (_reader != null || _writer != null)
                     return true;
 
-                return File.Exists(GetFilePath());
+                return System.IO.File.Exists(GetFilePath());
             }
         }
-        /// <summary>
-        /// The file path or directory part of the file name.
-        /// This is used in the building of the file name.
-        /// </summary>
-        private readonly string _filePath = string.Empty;
-        /// <summary>
-        /// The extension for the filename. Is used in the building of the filename
-        /// </summary>
-        private const string Extension = "qbx";
-
-        /// <summary>
-        /// ReferenceDate in hele minuten, de waarden in deze storage worden weggeschreven in hele minuten.
-        /// </summary>
-        private DateTime ReferenceDate { get; set; }
 
         /// <summary>
         /// Backing field for the StartOfFile property. Denotes the first time a value was added and is the base for
@@ -102,7 +90,7 @@ namespace QboxNext.Qserver.Core.DataStore
         {
             get
             {
-                return _reader ?? (_reader = new BinaryReader(File.Open(GetFilePath(), FileMode.Open, FileAccess.Read, FileShare.ReadWrite)));
+                return _reader ?? (_reader = new BinaryReader(System.IO.File.Open(GetFilePath(), FileMode.Open, FileAccess.Read, FileShare.ReadWrite)));
             }
         }
 
@@ -127,32 +115,9 @@ namespace QboxNext.Qserver.Core.DataStore
         /// </summary>
         protected static readonly Logger Log = QboxNextLogFactory.GetLogger("kWhStorage");
 
-        /// <summary>
-        /// Auto implement property for the number of days that is used to create the file when initialized or expanded.
-        /// </summary>
-        protected double GrowthNrOfDays { get; set; }
-
         #endregion protected
 
         #region public
-
-        /// <summary>
-        /// Serialnumber for the Qbox that holds the counter for which this storage provider is storing the data
-        /// </summary>
-        public string SerialNumber { get; private set; }
-
-        /// <summary>
-        /// The counter nr for the counter in the Qbox
-        /// </summary>
-        public int Counter { get; private set; }
-
-        /// <summary>
-        /// StorageId added by firmware 39
-        /// By StorageId = null/empty, the old filename is used
-        /// By StorageId != null, value is used for filename
-        /// </summary>
-        //todo: refactor naar 1 storage id methode naam geving. Let wel op dat dan een tool geschreven moet worden om alle bestaande files eerst te hernoemen
-        public string StorageId { get; private set; }
 
         /// <summary>
         /// A Guid id intended to be used as a unique identifier for the file
@@ -196,70 +161,28 @@ namespace QboxNext.Qserver.Core.DataStore
             }
         }
 
-        /// <summary>
-        /// Auto implement property that stores the precision given in the constructor
-        /// Used in the calculation of the values when storing the data for the kWh and money fields
-        /// </summary>
-        private Precision Precision { get; set; }
-
-        /// <summary>
-        /// Proeprty that signals that it is allowed to overwrite given values.
-        /// In normal operation it should not be allowed to overwrite values stored because the Qbox sends its values every minute
-        /// and if a value in the past is send (twice) this should be seen as an error. The time in the qbox can be off due to hardware
-        /// choices. That would allow overwrite of faulty values over existing correct values.
-        /// To allow the recalculation of a file with its values for kwh and money it is in extraordinary cases needed to allow for overwrites.
-        /// </summary>
-        private bool AllowOverwrite { get; set; }
-
         #endregion
 
         #region Constructors
 
         /// <summary>
-        /// Constructor with default values for a few of the parameters
-        /// </summary>
-        /// <param name="serialNumber">Initializes the serial number property</param>
-        /// <param name="filePath">Initializes the path (directory part of the file path)</param>
-        /// <param name="counter">Initializes the counter id property</param>
-        /// <param name="precision">Initializes the precision that the values are returned in in the GetSeries calls</param>
-        /// <param name="storageId">The "second" storageId used in building the file name</param>
-        /// <param name="allowOverwrite">Initializes the allowOverwrite property</param>
-        /// <param name="nrOfDays">Initialized the number of days the file is initially created for and when a file expansion is made</param>
-        public kWhStorage(string serialNumber, string filePath, int counter, Precision precision, string storageId = "", bool allowOverwrite = false, int nrOfDays = 7)
-            : this(serialNumber, filePath, counter, precision, DateTime.Now, storageId, allowOverwrite, nrOfDays)
-        {
-        }
-
-        /// <summary>
         /// Constructor that has an extra parameter to hold the ReferenceDate so the storage can be created in the past. This helps
         /// when tools want to create and recalcalculate files based on history of existing Qboxes or to simulate a past history.
         /// </summary>
-        /// <param name="serialNumber">Initializes the serial number property</param>
-        /// <param name="filePath">Initializes the path (directory part of the file path)</param>
-        /// <param name="counter">Initializes the counter id property</param>
-        /// <param name="precision">Initializes the precision that the values are returned in in the GetSeries calls</param>
-        /// <param name="referenceDate">Initialize the reference date as the start date for the file iso the current date and time</param>
-        /// <param name="storageId">The "second" storageId used in building the file name</param>
-        /// <param name="allowOverwrite">Initializes the allowOverwrite property</param>
-        /// <param name="nrOfDays">Initialized the number of days the file is initially created for and when a file expansion is made</param>
-        private kWhStorage(string serialNumber, string filePath, int counter, Precision precision, DateTime referenceDate, string storageId = "", bool allowOverwrite = false, int nrOfDays = 7)
+        /// <param name="options">The options.</param>
+        /// <param name="context"></param>
+        public kWhStorage(IOptions<kWhStorageOptions> options, StorageProviderContext context)
         {
-            Log.Trace("ctor");
+            _options = options.Value ?? throw new ArgumentNullException(nameof(options));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
 
-            Precision = precision;
-            SerialNumber = serialNumber;
-            Counter = counter;
-            _filePath = filePath;
-            ReferenceDate = referenceDate.TruncateToMinute();
-            AllowOverwrite = allowOverwrite;
-            GrowthNrOfDays = nrOfDays;
-            StorageId = storageId;
+            Log.Trace("ctor");
 
             ID = Guid.NewGuid();
 
             _buffer = new kWhStorageBuffer(this);
 
-            Log.Debug("SerialNumber: {0}, filePath: {1}", serialNumber, GetFilePath());
+            Log.Debug("SerialNumber: {0}, filePath: {1}", _context.SerialNumber, GetFilePath());
 
             if (!FileExists)
                 return;
@@ -271,7 +194,7 @@ namespace QboxNext.Qserver.Core.DataStore
             catch (EndOfStreamException)
             {
                 Dispose();
-                File.Delete(GetFilePath());
+                System.IO.File.Delete(GetFilePath());
             }
         }
 
@@ -293,7 +216,7 @@ namespace QboxNext.Qserver.Core.DataStore
             Writer.Write(startOfFile.ToBinary());
 
             // write end of file
-            var endOfFile = startOfFile.AddDays(GrowthNrOfDays);
+            var endOfFile = startOfFile.AddDays(_options.GrowthNrOfDays);
             Writer.Write(endOfFile.ToBinary());
 
             // write the ID            
@@ -332,8 +255,8 @@ namespace QboxNext.Qserver.Core.DataStore
 #endif
             try
             {
-                var kwh = Convert.ToUInt64(record.KiloWattHour * (int)Precision);
-                var money = Convert.ToUInt64(record.Money * (int)Precision);
+                var kwh = Convert.ToUInt64(record.KiloWattHour * (int)_context.Precision);
+                var money = Convert.ToUInt64(record.Money * (int)_context.Precision);
                 writer.Write(record.Raw);
                 writer.Write(kwh);
                 writer.Write(money);
@@ -470,7 +393,7 @@ namespace QboxNext.Qserver.Core.DataStore
 
         private string GetDirectory()
         {
-            return Path.Combine(_filePath, "Qbox_" + SerialNumber);
+            return Path.Combine(_options.DataStorePath, "Qbox_" + _context.SerialNumber);
         }
 
         /// <summary>
@@ -513,7 +436,7 @@ namespace QboxNext.Qserver.Core.DataStore
             var offsetToEndFile = CalculateOffset(endTime);
 
             Writer.Seek((int)(offsetToEndFile), SeekOrigin.Begin);
-            var newEndTime = measurementTime.AddDays(GrowthNrOfDays);
+            var newEndTime = measurementTime.AddDays(_options.GrowthNrOfDays);
             InitializeToZero(newEndTime - endTime);
             _endOfFile = newEndTime;
 
@@ -662,7 +585,7 @@ namespace QboxNext.Qserver.Core.DataStore
         //refactor: investigate the use of the method
         private bool IsTimeAllowed(DateTime measureTime)
         {
-            return measureTime <= ReferenceDate.AddMinutes(5) && measureTime >= new DateTime(2010, 1, 1);
+            return measureTime <= _context.ReferenceDate.AddMinutes(5) && measureTime >= new DateTime(2010, 1, 1);
         }
 
         #endregion
@@ -708,11 +631,11 @@ namespace QboxNext.Qserver.Core.DataStore
         public string GetFilePath()
         {
             // Create the filename
-            var filename = String.IsNullOrEmpty(StorageId) ?
-                $"{SerialNumber}_{Counter:00000000}.{Extension}" :
-                $"{StorageId}.{Extension}";
+            var filename = String.IsNullOrEmpty(_context.StorageId) ? 
+                $"{_context.SerialNumber}_{_context.CounterId:00000000}{_options.Extension}" :
+                $"{_context.StorageId}{_options.Extension}";
             var result = Path.Combine(GetDirectory(), filename);
-            return result;
+            return Path.GetFullPath(result);
         }
 
         /// <summary>
@@ -737,7 +660,7 @@ namespace QboxNext.Qserver.Core.DataStore
             }
             var start = begin < StartOfFile ? StartOfFile : begin;
             var stop = end > EndOfFile ? EndOfFile : end;
-            stop = stop > ReferenceDate ? ReferenceDate : stop;
+            stop = stop > _context.ReferenceDate ? _context.ReferenceDate : stop;
             if (stop < start)
             {
                 return 0;
@@ -774,7 +697,7 @@ namespace QboxNext.Qserver.Core.DataStore
             if (inBegin > inEnd)
                 throw new ArgumentOutOfRangeException("inBegin", "begin before end");
 
-            Log.Trace("GetRecords(begin = {0}, end = {1}, counter = {2}, path = {3}, refdate = {4})", inBegin, inEnd, Counter, GetFilePath(), ReferenceDate);
+            Log.Trace("GetRecords(begin = {0}, end = {1}, counter = {2}, path = {3}, refdate = {4})", inBegin, inEnd, _context.CounterId, GetFilePath(), _context.ReferenceDate);
             if (!FileExists)
             {
                 Log.Warn("File does not exist {0}", GetFilePath());
@@ -811,7 +734,7 @@ namespace QboxNext.Qserver.Core.DataStore
                 if (first == null)
                     break;
 
-                var lastAllowedTimestamp = ReferenceDate < EndOfFile ? ReferenceDate : EndOfFile;
+                var lastAllowedTimestamp = _context.ReferenceDate < EndOfFile ? _context.ReferenceDate : EndOfFile;
                 var last = endTime > lastAllowedTimestamp ? GetClosestValue(lastAllowedTimestamp, false) : GetValue(endTime);
 
                 Log.Trace("last = {0}", last != null ? last.Raw.ToString() : "null");
@@ -850,7 +773,7 @@ namespace QboxNext.Qserver.Core.DataStore
             if (!FileExists)
                 return false;
 
-            return (inTimestamp >= StartOfFile && inTimestamp < EndOfFile && inTimestamp <= ReferenceDate.AddMinutes(5));
+            return (inTimestamp >= StartOfFile && inTimestamp < EndOfFile && inTimestamp <= _context.ReferenceDate.AddMinutes(5));
         }
 
 
@@ -869,7 +792,7 @@ namespace QboxNext.Qserver.Core.DataStore
             }
             try
             {
-                if (measureTime < StartOfFile || measureTime >= EndOfFile || measureTime > ReferenceDate.AddMinutes(5))
+                if (measureTime < StartOfFile || measureTime >= EndOfFile || measureTime > _context.ReferenceDate.AddMinutes(5))
                 {
                     Log.Warn("measureTime {1} falls outside the file ({0}) s:{2} e:{3}", GetFilePath(), measureTime, StartOfFile, EndOfFile);
                     return null;
@@ -1053,10 +976,10 @@ namespace QboxNext.Qserver.Core.DataStore
         /// </summary>
         private Record CreateRecord(ulong inRaw, ulong inEnergy, ulong inMoney, ushort inQuality, DateTime inTimestamp)
         {
-            return new Record(inRaw, inEnergy / (decimal)Precision, inMoney / (decimal)Precision, inQuality)
-            {
-                Time = inTimestamp
-            };
+            return new Record(inRaw, inEnergy / (decimal)_context.Precision, inMoney / (decimal)_context.Precision, inQuality)
+                {
+                    Time = inTimestamp
+                };
         }
 
 
@@ -1065,7 +988,7 @@ namespace QboxNext.Qserver.Core.DataStore
         /// </summary>
         private bool IsValidSlot(ulong inRaw, ushort inQuality)
         {
-            return (inRaw < ulong.MaxValue || (inRaw == ulong.MaxValue && (inQuality > 0 && !AllowOverwrite)));
+            return (inRaw < ulong.MaxValue || (inRaw == ulong.MaxValue && (inQuality > 0 && !_context.AllowOverwrite)));
         }
 
 
@@ -1319,7 +1242,7 @@ namespace QboxNext.Qserver.Core.DataStore
             {
                 try
                 {
-                    _mStream = File.Open(_mPath, _mFileMode, _mFileAccess, _mFileShare);
+                    _mStream = System.IO.File.Open(_mPath, _mFileMode, _mFileAccess, _mFileShare);
                     break;
                 }
                 catch (Exception ex)
@@ -1350,7 +1273,7 @@ namespace QboxNext.Qserver.Core.DataStore
             {
                 try
                 {
-                    _mStream = File.Open(_mPath, _mFileMode, _mFileAccess, _mFileShare);
+                    _mStream = System.IO.File.Open(_mPath, _mFileMode, _mFileAccess, _mFileShare);
                     return true;
                 }
                 catch (Exception e)

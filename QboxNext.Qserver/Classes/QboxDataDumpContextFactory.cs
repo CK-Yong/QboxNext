@@ -8,6 +8,7 @@ using QboxNext.Core.Encryption;
 using QboxNext.Core.Log;
 using QboxNext.Model.Classes;
 using QboxNext.Qboxes.Parsing.Protocols;
+using QboxNext.Qserver.StorageProviders;
 using QboxNext.Qserver.Core.Interfaces;
 using QboxNext.Qserver.Core.Model;
 
@@ -16,6 +17,13 @@ namespace QboxNext.Qserver.Classes
     public class QboxDataDumpContextFactory : IQboxDataDumpContextFactory
     {
         private static readonly Logger Log = QboxNextLogFactory.GetLogger("QboxDataDumpContextFactory");
+
+        private readonly IStorageProviderFactory _storageProviderFactory;
+
+        public QboxDataDumpContextFactory(IStorageProviderFactory storageProviderFactory)
+        {
+            _storageProviderFactory = storageProviderFactory ?? throw new ArgumentNullException(nameof(storageProviderFactory));
+        }
 
         /// <summary>
         /// Overide to allow the creation of the Qbox Data Dump context object.
@@ -40,7 +48,8 @@ namespace QboxNext.Qserver.Classes
 
                 if (mini != null)
                 {
-                    mini.SetStorageProvider();
+                    // TODO: refactor/consider injecting through ctor.
+                    mini.SetStorageProvider(_storageProviderFactory);
                     var message = QboxMessageDecrypter.DecryptPlainOrEncryptedMessage(bytes);
                     return new QboxDataDumpContext(message, length, lastSeenAtUrl, externalIp, mini, error: null);
                 }
@@ -61,12 +70,12 @@ namespace QboxNext.Qserver.Classes
         }
 
         /// <summary>
-		/// Returns a mini poco by serial number. First tries the Redis cache repository and if not found
-		/// checks if it can find the box in Eco.
-		/// Upon connection exception it will also fall back to ECO.
-		/// </summary>
-		/// <param name="sn">Serialnumber of the Mini</param>
-		/// <returns>MiniPoco object holding the Mini data</returns>
+        /// Returns a mini poco by serial number. First tries the Redis cache repository and if not found
+        /// checks if it can find the box in Eco.
+        /// Upon connection exception it will also fall back to ECO.
+        /// </summary>
+        /// <param name="sn">Serialnumber of the Mini</param>
+        /// <returns>MiniPoco object holding the Mini data</returns>
         private MiniPoco Mini(string sn)
         {
             try
@@ -83,7 +92,6 @@ namespace QboxNext.Qserver.Classes
                 var mini = new MiniPoco()
                 {
                     SerialNumber = sn,
-                    DataStorePath = QboxNext.Core.Config.DataStorePath,
                     Counters = new List<CounterPoco>()
                     {
                         new CounterPoco
@@ -145,13 +153,13 @@ namespace QboxNext.Qserver.Classes
 
 
         /// <summary>
-		/// Finds the values from the request and returnes them in out params for later use in the process.
-		/// </summary>
-		/// <param name="controllerContext">The Controller Context holds the information for the request and actual controller action</param>
-		/// <param name="length">The length of the message in the request is returned using this out param</param>
-		/// <param name="lastSeenAtUrl">The current request url is returned using this out param </param>
-		/// <param name="externalIp">The external ip the mini is sending the request from</param>
-		/// <returns></returns>
+        /// Finds the values from the request and returnes them in out params for later use in the process.
+        /// </summary>
+        /// <param name="controllerContext">The Controller Context holds the information for the request and actual controller action</param>
+        /// <param name="length">The length of the message in the request is returned using this out param</param>
+        /// <param name="lastSeenAtUrl">The current request url is returned using this out param </param>
+        /// <param name="externalIp">The external ip the mini is sending the request from</param>
+        /// <returns></returns>
         private byte[] GetRequestVariables(ControllerContext controllerContext, out int length,
                                                   out string lastSeenAtUrl,
                                                   out string externalIp)
@@ -167,12 +175,12 @@ namespace QboxNext.Qserver.Classes
         }
 
         /// <summary>
-		/// Reads data from a stream until the end is reached. The
-		/// data is returned as a byte array. An IOException is
-		/// thrown if any of the underlying IO calls fail.
-		/// </summary>
-		/// <param name="stream">The stream to read data from</param>
-		/// <param name="initialLength">The initial buffer length</param>
+        /// Reads data from a stream until the end is reached. The
+        /// data is returned as a byte array. An IOException is
+        /// thrown if any of the underlying IO calls fail.
+        /// </summary>
+        /// <param name="stream">The stream to read data from</param>
+        /// <param name="initialLength">The initial buffer length</param>
         public byte[] ReadRequestInputStreamFully(Stream stream, int initialLength)
         {
             // If we've been passed an unhelpful initial length, just

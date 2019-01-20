@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using NLog;
-using QboxNext.Qserver.Core.Interfaces;
 using QboxNext.Qserver.Core.Model;
+using QboxNext.Qserver.StorageProviders;
 
 namespace QboxNext.Qserver.Core.Utils
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using QboxNext.Core;
 using QboxNext.Qserver.Core.Statistics;
 
-namespace QboxNext.Qserver.Core.Interfaces
+namespace QboxNext.Qserver.StorageProviders
 {
     public interface IStorageProvider: IDisposable
     {
