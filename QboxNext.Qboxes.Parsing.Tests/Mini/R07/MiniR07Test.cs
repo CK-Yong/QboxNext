@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
+using QboxNext.Logging;
 using QboxNext.Qboxes.Parsing.Protocols;
 
 namespace QboxNext.Qboxes.Parsing.Mini.R07
@@ -8,6 +10,13 @@ namespace QboxNext.Qboxes.Parsing.Mini.R07
     [TestFixture]
     public class MiniR07Test
     {
+        [SetUp]
+        public void Init()
+        {
+            // Setup static logger factory
+            QboxNextLogProvider.LoggerFactory = new LoggerFactory();
+        }
+
         [Test]
         public void ParseHexStringProtocolShouldReturnParseResultTest()
         {

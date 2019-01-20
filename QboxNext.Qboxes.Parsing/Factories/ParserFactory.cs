@@ -3,7 +3,6 @@ using QboxNext.Logging;
 using QboxNext.Qboxes.Parsing.Protocols;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace QboxNext.Qboxes.Parsing.Factories
 {
@@ -19,7 +18,6 @@ namespace QboxNext.Qboxes.Parsing.Factories
         /// <param name="ProtocolVersion">Parsers start from protocolversion</param>
         public static void Register(Type parserType, int ProtocolVersion)
         {
-            Debug.Assert(RegisteredParsers != null);
             if (parserType.IsSubclassOf(typeof(MiniParser)) && !RegisteredParsers.ContainsKey(parserType.Name))
             {
                 RegisteredParsers.Add(parserType.Name, new ParserInfo { Type = parserType, ProtocolNr = ProtocolVersion });
@@ -28,10 +26,10 @@ namespace QboxNext.Qboxes.Parsing.Factories
 
         public static void RegisterAllParsers()
         {
-            ParserFactory.Register(typeof(MiniR07), 0x02);
-            ParserFactory.Register(typeof(MiniR16), 0x27);
-            ParserFactory.Register(typeof(MiniR21), 0x29);
-            ParserFactory.Register(typeof(MiniResponse), -1);
+            Register(typeof(MiniR07), 0x02);
+            Register(typeof(MiniR16), 0x27);
+            Register(typeof(MiniR21), 0x29);
+            Register(typeof(MiniResponse), -1);
         }
 
         public static MiniParser GetParser(string name)
