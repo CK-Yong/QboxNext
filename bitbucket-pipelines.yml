@@ -1,0 +1,22 @@
+image: microsoft/dotnet
+
+pipelines:
+  default:
+    - step:
+        name: Build
+        script:
+          - ./build.sh
+    - step:
+        name: Unit tests
+        script:
+          - ./run-unittests.sh
+  pull-requests:
+    '{feature/*,fix/*}':
+      - step:
+          name: Build
+          script:
+            - ./build.sh
+      - step:
+          name: Unit tests
+          script:
+            - ./run-unittests.sh
