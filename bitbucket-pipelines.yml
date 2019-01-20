@@ -7,11 +7,14 @@ pipelines:
         caches:
           - dotnetcore
         script:
-          - ./build.sh
+          - chmod +x ./build.sh
+          - sh ./build.sh
     - step:
         name: Unit tests
         script:
-          - ./run-unittests.sh
+          - chmod +x ./run-unittests.sh
+          - sh ./run-unittests.sh
+          # TODO: run integration?
   pull-requests:
     '{feature/*,fix/*}':
       - step:
@@ -19,8 +22,10 @@ pipelines:
           caches:
             - dotnetcore
           script:
-            - ./build.sh
+            - chmod +x ./build.sh
+            - sh ./build.sh
       - step:
           name: Unit tests
           script:
-            - ./run-unittests.sh
+            - chmod +x ./run-unittests.sh
+            - sh ./run-unittests.sh

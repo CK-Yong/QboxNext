@@ -1,3 +1,4 @@
 #!/bin/sh
 
-dotnet build
+dotnet restore
+dotnet build --no-restore
