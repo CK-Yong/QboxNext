@@ -12,4 +12,14 @@ services:
 #    Volume mount for Windows hosts
      - d:/qboxnextdata:/var/qboxnextdata 
 
- 
+  qservice:
+    build: .\QboxNext.Qservice
+    restart: always
+    ports:
+     - "5001:5001"
+    volumes:
+#    Volume mount for Linux hosts
+#    - /var/qboxnextdata:/var/qboxnextdata
+
+#    Volume mount for Windows hosts
+     - d:/qboxnextdata:/var/qboxnextdata 
