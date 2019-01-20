@@ -4,7 +4,7 @@ services:
     build: .\QboxNext.Qserver
     restart: always
     ports:
-     - "5000:5000"
+     - "80:5000"
     volumes:
 #    Volume mount for Linux hosts
 #    - /var/qboxnextdata:/var/qboxnextdata
