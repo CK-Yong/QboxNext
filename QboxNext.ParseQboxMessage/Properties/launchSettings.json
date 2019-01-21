@@ -1,8 +1,12 @@
 {
   "profiles": {
-    "QboxNext.ParseQboxMessage": {
+    "Parse message": {
       "commandName": "Project",
       "commandLineArgs": "--message=0EF7050000378C00010100000000"
+    },
+    "Debug with invalid args": {
+      "commandName": "Project",
+      "commandLineArgs": "--blah=blah"
     }
   }
 }
