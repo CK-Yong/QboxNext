@@ -1,8 +1,19 @@
 {
   "profiles": {
-    "QboxNext.DumpQbx": {
+    "Default": {
+      "commandName": "Project"
+    },
+    "Dump qbx file": {
       "commandName": "Project",
-      "commandLineArgs": "--qbx=d:\\QboxNextData\\Qbox_15-46-002-442\\15-46-002-442_00000181.qbx --values"
+      "commandLineArgs": "--qbx=./../../../QBX/12-49-001-336_00000181.qbx --values"
+    },
+    "View qbx file": {
+      "commandName": "Project",
+      "commandLineArgs": "--qbx=./../../../QBX/12-49-001-336_00000181.qbx"
+    },
+    "Debug with invalid args": {
+      "commandName": "Project",
+      "commandLineArgs": "--blah=blah"
     }
   }
 }
