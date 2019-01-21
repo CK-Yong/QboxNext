@@ -1,6 +1,9 @@
 {
   "profiles": {
-    "QboxNext.SimulateQbox": {
+    "Default": {
+      "commandName": "Project"
+    },
+    "Simulate single / smart / flat": {
       "commandName": "Project",
       "commandLineArgs": "--qserver=http://localhost:61655 --qboxserial=00-00-000-000 --metertype=smart --pattern=181:flat(2);182:zero;281:zero;282:zero;2421:zero"
     }
