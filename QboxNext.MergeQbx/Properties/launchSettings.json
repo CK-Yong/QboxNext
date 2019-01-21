@@ -1,8 +1,15 @@
 {
   "profiles": {
-    "QboxNext.MergeQbx": {
+    "Default": {
+      "commandName": "Project"
+    },
+    "Merge QBX": {
       "commandName": "Project",
       "commandLineArgs": "--original=d:\\temp\\Qbox_15-49-002-081\\15-49-002-081_00000181_Client0.qbx --new=d:\\temp\\Qbox_15-49-002-081\\15-49-002-081_00000181.qbx"
+    },
+    "Debug with invalid args": {
+      "commandName": "Project",
+      "commandLineArgs": "--blah=blah"
     }
   }
 }
