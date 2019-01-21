@@ -14,7 +14,16 @@ pipelines:
         script:
           - chmod +x ./run-unittests.sh
           - sh ./run-unittests.sh
-          # TODO: run integration?
+    - step: &builddockercontainer
+        name: Build Docker Container and run integrationtests
+        script:
+          - chmod +x ./publish-and-dockerize.sh
+          - sh ./publish-and-dockerize.sh
+          - chmod +x ./run-integrationtests.sh
+          - sh ./run-integrationtests.sh
+        services: 
+          - docker
+    - step:
   pull-requests:
     '{feature/*,fix/*}':
       - step: *build
