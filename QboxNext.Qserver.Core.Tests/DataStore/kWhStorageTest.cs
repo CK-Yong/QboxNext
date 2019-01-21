@@ -13,6 +13,7 @@ using QboxNext.Qserver.Core.Utils;
 namespace QboxNext.Qserver.Core.DataStore
 {
     [TestFixture]
+    [NonParallelizable]
     public class KWhStorageTest
     {
         private const string BaseDir = @"./Temp/KWhStorageTest";
