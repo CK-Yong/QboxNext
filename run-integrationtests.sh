@@ -9,6 +9,9 @@ rm -rf **/test-results
 export PATH="$PATH:/root/.dotnet/tools"
 dotnet tool install -g trx2junit
 
+run_qserver_tests
+run_qservice_tests
+
 # Exec all QServer tests and convert to JUnit. Both steps must be tracked for exit code.
 function run_qserver_tests{
 	echo "Running unit tests"
@@ -21,7 +24,7 @@ function run_qserver_tests{
 		if ! trx2junit **/test-results/*.trx ; then
 			echo "Failed to convert reports." && exit 1
 		fi
-		echo "All tests have passed." && run_qservice_tests
+		echo "All tests have passed."
 	fi
 }
 
