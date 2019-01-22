@@ -200,7 +200,7 @@ blank_lines_after_control_transfer_statements = 1  #check for block or each
 
 # _Braces Layout_
 brace_style = next_line
-anonymous_method_declaration_braces = next_line_shifted_2 #check
+anonymous_method_declaration_braces = next_line
 empty_block_style = multiline
 
 # _Line Breaks_
@@ -221,7 +221,7 @@ wrap_before_declaration_lpar = true
 wrap_after_declaration_lpar = true
 wrap_arguments_style = chop_if_long
 wrap_before_invocation_lpar = false
-wrap_after_invocation_lpar = true
+wrap_after_invocation_lpar = false
 wrap_before_comma = false
 wrap_before_arrow_with_expressions = false
 wrap_after_dot_in_method_calls = false
@@ -270,7 +270,7 @@ indent_nested_for_stmt = true
 indent_nested_foreach_stmt = true
 indent_nested_while_stmt = true
 indent_type_constraints = true
-stick_comment = true
+stick_comment = false
 indent_method_decl_pars = inside
 indent_invocation_pars = inside
 indent_statement_pars = outside
