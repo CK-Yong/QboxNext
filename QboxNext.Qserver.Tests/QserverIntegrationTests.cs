@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -9,6 +9,7 @@ using NUnit.Framework;
 namespace QboxNext.Qserver.Tests
 {
 	[Category("Integration")]
+    [TestFixture]
 	public class QserverIntegrationTests
 	{
 		private readonly string _qserverMessageEndpoint = "/device/qbox/6618-1400-0200/15-46-002-442";

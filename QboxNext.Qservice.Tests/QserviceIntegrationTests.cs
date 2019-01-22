@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,6 +15,7 @@ using QboxNext.Qservice.Classes;
 namespace QboxNext.Qservice.Tests
 {
 	[Category("Integration")]
+    [TestFixture]
 	public class QserviceIntegrationTests
 	{
 		private readonly string _qserviceMessageEndpoint = $"api/getseries?sn=15-46-002-442&from={DateTime.Today.AddDays(-1)}&to={DateTime.Today}";
@@ -23,7 +24,7 @@ namespace QboxNext.Qservice.Tests
 		[SetUp]
 		public void Setup()
 		{
-			_httpClient = new HttpClient {BaseAddress = new Uri("http://localhost:5001")};
+			_httpClient = new HttpClient {BaseAddress = new Uri("http://localhost:5002")};
 		}
 
 		[Test]

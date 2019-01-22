@@ -16,7 +16,7 @@ services:
     build: .\QboxNext.Qservice
     restart: always
     ports:
-     - "5001:5001"
+     - "5002:5002"
     volumes:
 #    Volume mount for Linux hosts
 #    - /var/qboxnextdata:/var/qboxnextdata
